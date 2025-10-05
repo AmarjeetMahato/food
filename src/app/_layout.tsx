@@ -44,6 +44,25 @@ export default function RootLayout() {
             headerTitleAlign: "center", // ✅ center the title
             animation:"slide_from_bottom",
          }} />
+
+         
+               <Stack.Screen name="(screens)/search" options={{
+            headerShown: false, // ✅ show header
+            headerTintColor: "black", // ✅ back arrow color
+            headerTitleAlign: "center", // ✅ center the title
+            animation:"fade_from_bottom",
+         }} />
+   
+                 <Stack.Screen name="(screens)/chat" options={{
+            headerShown: false, // ✅ show header
+            headerTintColor: "black", // ✅ back arrow color
+            headerTitleAlign: "center", // ✅ center the title
+            animation:"fade_from_bottom",
+         }} />
+   
+   
+   
+   
    
    
    

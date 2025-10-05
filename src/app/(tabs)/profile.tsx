@@ -9,6 +9,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { Pressable } from "react-native";
 
 const Profile = () => {
   const router = useRouter();
@@ -112,22 +113,23 @@ const Profile = () => {
                 </View>
 
                 {/* Remaining Food */}
-                <View className="flex-row items-center justify-between p-4 border-b border-gray-100">
-                  <View className="flex-row items-center gap-4">
-                    <View className="w-10 h-10 bg-green-100 rounded-full items-center justify-center">
-                      <Ionicons name="cart" size={22} color="green" />
-                    </View>
-                    <View>
-                      <Text className="font-semibold text-gray-800">
-                        Remaining Food
-                      </Text>
-                      <Text className="text-xs text-gray-500">
-                        View available items
-                      </Text>
-                    </View>
-                  </View>
-                  <Ionicons name="list-outline" size={22} color="purple" />
-                </View>
+               {/* Chat Support */}
+<Pressable onPress={()=> router.push("/chat")} className="flex-row items-center justify-between p-4 border-b border-gray-100">
+  <View className="flex-row items-center gap-4">
+    <View className="w-10 h-10 bg-blue-100 rounded-full items-center justify-center">
+      <Ionicons name="chatbubbles" size={22} color="#3b82f6" />
+    </View>
+    <View>
+      <Text className="font-semibold text-gray-800">
+        Chat Support
+      </Text>
+      <Text className="text-xs text-gray-500">
+        We're here to help
+      </Text>
+    </View>
+  </View>
+  <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+</Pressable>
 
                 {/* Dashboard */}
                 <View className="flex-row items-center justify-between p-4">

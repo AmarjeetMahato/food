@@ -4,13 +4,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import SubscriptionsCard from '../../components/Subscriptions';
+import SubscriptionDashboard from '../../components/Subscribed';
+import SubscriptionScreen from '../../components/Subscribed';
 
 const Subscriptions = () => {
+
+   let isSubscribed =  false;
  
   return (
-    <SafeAreaView edges={['top']} className="flex-1 bg-gray-50">
-            <SubscriptionsCard />
-    </SafeAreaView>
+    <View  className="flex-1 bg-gray-50">
+          {isSubscribed ? <SubscriptionScreen/> : <SubscriptionsCard/>}
+        
+    </View>
   );
 };
 

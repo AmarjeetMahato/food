@@ -110,7 +110,7 @@ const SinglePage = () => {
             </View>
             <View className="bg-gray-50 rounded-2xl p-4">
               <View className="flex-row flex-wrap gap-2">
-                {['Beef Patty', 'Cheddar', 'Lettuce', 'Tomato', 'Pickles', 'Onions', 'Sesame Bun', 'Secret Sauce'].map((item, i) => (
+                {[ 'Cheddar', 'Lettuce', 'Tomato', 'Pickles', 'Onions', 'Sesame Bun', 'Secret Sauce'].map((item, i) => (
                   <View key={i} className="bg-white px-3 py-2 rounded-full border border-gray-200">
                     <Text className="text-sm text-gray-700">{item}</Text>
                   </View>
@@ -127,7 +127,7 @@ const SinglePage = () => {
             </View>
             <View className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-4">
               <Text className="text-gray-700 text-sm leading-6">
-                The burger is freshly prepared after you place the order. The beef patty is grilled 
+                The burger is freshly prepared after you place the order. The  is grilled 
                 to perfection with a smoky flavor, and all ingredients are locally sourced and 
                 freshly chopped.
               </Text>

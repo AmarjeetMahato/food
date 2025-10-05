@@ -7,7 +7,7 @@ import { useRouter } from 'expo-router';
 const { width } = Dimensions.get('window');
 const numColumns = 2;
 const boxSize = width / numColumns - 24; // adjust for margin/padding
-
+const GAP = 10;
 const foodItems = [
   { id: '1', name: 'Burger', price: '$5', image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YnVyZ2VyfGVufDB8fDB8fHww' },
   { id: '2', name: 'Pizza', price: '$8', image: 'https://images.unsplash.com/photo-1611270629569-8b357cb88da9?auto=format&fit=crop&w=600&q=80' },
@@ -67,12 +67,20 @@ const foodItems = [
 export default function RecommendedMenu() {
     const router = useRouter()
   return (
-      <View className=" px-1 pt-3 pb-0 rounded-md">
+      <View className=" px-1 pt-3 pb-0 rounded-md ">
       <FlatList
         data={foodItems}
         keyExtractor={(item) => item.id}
         numColumns={numColumns}
-        columnWrapperStyle={{ justifyContent: 'space-between', marginBottom:5 }}
+           columnWrapperStyle={{
+          justifyContent: 'center', // ✅ centers both columns horizontally
+          gap: GAP, // even gap between columns
+          marginBottom: GAP,
+        }}
+        contentContainerStyle={{
+          alignItems: 'center', // ✅ centers whole grid in the list
+          paddingBottom: 20,
+        }}
         scrollEnabled={false}
         renderItem={({ item }) => (
                    <Pressable

@@ -1,9 +1,9 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import { AntDesign, MaterialIcons  ,FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons  ,FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { Image } from "react-native";
 
-const isSubscribed = true;
+const isSubscribed = false;
 
 export default function TabsLayout() {
   return (
@@ -31,7 +31,7 @@ export default function TabsLayout() {
       return isSubscribed ? (
         <FontAwesome5 name="check-circle" size={24} color={focused ? "#FF7E5F" : "gray"} />
       ) : (
-        <FontAwesome5 name="bell" size={24} color={focused ? "#FF7E5F" : "gray"} />
+        <Ionicons  name="card" size={24} color={focused ? "#FF7E5F" : "gray"} />
       );
     },
   }}

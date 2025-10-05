@@ -83,7 +83,8 @@ const SubscriptionsCard = () => {
 
   return (
   
-      <ScrollView       className="flex-1"
+     <SafeAreaView edges={["top"]} className="flex-1 ">
+        <ScrollView     
       contentContainerStyle={{ paddingTop: 0, paddingBottom: 0 }} // remove any extra padding
       showsVerticalScrollIndicator={false}>
         {/* Header */}
@@ -166,7 +167,11 @@ const SubscriptionsCard = () => {
                         colors={['#fb923c', '#ea580c']} // Tailwind's orange-400 to orange-700 approx.
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
-                        className="py-4  rounded-xl  shadow-md "
+                        style={{
+                             borderRadius:5,
+                             paddingHorizontal:3,
+                             paddingVertical:12
+                        }}
                     >
                         <Text className="text-white text-center font-bold text-lg ">
                             {plan.price === 'Custom' ? 'Create Your Plan' : 'Subscribe Now'}
@@ -180,7 +185,7 @@ const SubscriptionsCard = () => {
         </View>
 
         {/* Footer Note */}
-        <View className="mx-6 mt-4 bg-blue-50 rounded-2xl p-4">
+        <View className="mx-6 mt-4 bg-blue-50 rounded-2xl mb-3 p-4">
           <View className="flex-row items-start gap-3">
             <Ionicons name="information-circle-outline" size={24} color="#3b82f6" />
             <View className="flex-1">
@@ -193,6 +198,7 @@ const SubscriptionsCard = () => {
           </View>
         </View>
       </ScrollView>
+     </SafeAreaView>
 
   );
 };
