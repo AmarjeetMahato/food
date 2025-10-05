@@ -196,7 +196,7 @@ const SinglePage = () => {
       </ScrollView>
 
       {/* Fixed Bottom Bar */}
-      <View   style={{ paddingBottom: insets.bottom  }}  className="absolute bottom-6 left-0 right-0 bg-white border-t border-gray-200 px-4 py-4">
+      <View   style={{ paddingBottom: insets.bottom  }}  className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2">
         <View className="flex-row items-center gap-3">
           {/* Quantity Selector */}
           <View className="flex-row items-center bg-gray-100 rounded-full px-2">

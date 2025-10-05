@@ -3,7 +3,7 @@ import { Tabs } from "expo-router";
 import { AntDesign, MaterialIcons  ,FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { Image } from "react-native";
 
-const isSubscribed = false;
+const isSubscribed = true;
 
 export default function TabsLayout() {
   return (

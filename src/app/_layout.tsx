@@ -22,11 +22,19 @@ export default function RootLayout() {
 
          
       <Stack.Screen name="(screens)/order" options={{
-            headerShown: true, // ✅ show header
-              title:"Recent orders",
+            headerShown: false, // ✅ show header
+      
             headerTintColor: "black", // ✅ back arrow color
             headerTitleAlign: "center", // ✅ center the title
             animation:"slide_from_bottom",
+         }} />
+
+            <Stack.Screen name="(screens)/orderdetails" options={{
+            headerShown: true, // ✅ show header
+              title:"Orders Details",
+            headerTintColor: "black", // ✅ back arrow color
+            headerTitleAlign: "center", // ✅ center the title
+            animation:"flip",
          }} />
 
          <Stack.Screen name="(screens)/orderhistory" options={{
