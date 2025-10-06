@@ -22,7 +22,7 @@ const Profile = () => {
             {/* Header with Cover & Profile */}
             <View className="bg-white shadow-lg rounded-b-3xl overflow-hidden">
               {/* Cover Photo */}
-              <View className="h-40 bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 relative">
+              <View className="h-30 bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 relative">
                 <View className="absolute top-4 right-4">
                   <View className="bg-white/30 backdrop-blur-sm p-2 rounded-full">
                     <Ionicons name="create-outline" size={20} color="white" />
@@ -87,7 +87,7 @@ const Profile = () => {
               </Text>
               <View className="bg-white rounded-2xl shadow-md overflow-hidden">
                 {/* Edit Profile */}
-                <View className="flex-row items-center justify-between p-4 border-b border-gray-100">
+                <Pressable onPress={()=> router.push("/editprofile")} className="flex-row items-center justify-between p-4 border-b border-gray-100">
                   <View className="flex-row items-center gap-4">
                     <View className="w-10 h-10 bg-orange-100 rounded-full items-center justify-center">
                       <MaterialIcons
@@ -110,7 +110,7 @@ const Profile = () => {
                     size={20}
                     color="gray"
                   />
-                </View>
+                </Pressable>
 
                 {/* Remaining Food */}
                {/* Chat Support */}
@@ -272,7 +272,7 @@ const Profile = () => {
             </TouchableOpacity>
 
             {/* Settings Section */}
-            <View className="mt-6 mx-4">
+            <Pressable onPress={()=> router.push("/settings")} className="mt-6 mx-4">
               <Text className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
                 Settings
               </Text>
@@ -294,7 +294,7 @@ const Profile = () => {
                   <Ionicons name="chevron-forward-outline" size={20} color="gray" />
                 </View>
               </View>
-            </View>
+            </Pressable>
 
 
             {/* Logout Button */}

@@ -37,6 +37,24 @@ export default function RootLayout() {
             animation:"flip",
          }} />
 
+           <Stack.Screen name="(screens)/settings" options={{
+            headerShown: false, // ✅ show header
+            headerTintColor: "black", // ✅ back arrow color
+            headerTitleAlign: "center", // ✅ center the title
+            animation:"slide_from_right",
+         }} />
+
+
+         
+            <Stack.Screen name="(screens)/editprofile" options={{
+            headerShown: true, // ✅ show header
+              title:"Edit Profile",
+            headerTintColor: "black", // ✅ back arrow color
+            headerTitleAlign: "center", // ✅ center the title
+            animation:"flip",
+         }} />
+
+
          <Stack.Screen name="(screens)/orderhistory" options={{
             headerShown: true, // ✅ show header
               title:"Orders History",

@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import MealDetailModal from './ModelMealDetails';
+import CustomMealModal from './ModelMealDetails';
 
 interface Meal {
   type: string;
@@ -23,12 +25,24 @@ interface Subscription {
 }
 
 const SubscriptionScreen = () => {
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
+
   const [activeTab, setActiveTab] = useState('subscription');
   const [currentSubscription, setCurrentSubscription] = useState<Subscription | null>({
     plan: 'Premium Monthly',
     expiryDate: 'Feb 15, 2025',
     remainingMeals: 18
   });
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  };
 
   const upcomingMeals: UpcomingMeal[] = [
     {
@@ -67,6 +81,12 @@ const SubscriptionScreen = () => {
       ]
     );
   };
+
+    const handleViewMeal = (mealData: Meal) => {
+    setSelectedMeal(mealData);
+    setModalVisible(true);
+  };
+
 
   const handleSkipMeal = (date: string, mealType: string) => {
     Alert.alert(
@@ -165,7 +185,7 @@ const SubscriptionScreen = () => {
                       >
                         <Ionicons name="restaurant" size={24} color="white" />
                       </LinearGradient>
-                      
+
                       {/* Title */}
                       <View className="flex-1">
                         <Text className="text-2xl font-bold text-gray-800">
@@ -211,7 +231,7 @@ const SubscriptionScreen = () => {
                       <View className="flex-row justify-between items-center mb-4">
                         <View>
                           <Text className="text-lg font-bold text-gray-800">{day.day}</Text>
-                          <Text className="text-gray-500 text-sm mt-1">{day.date}</Text>
+                          <Text className="text-gray-500 text-sm mt-1">{formatDate(day.date)}</Text>
                         </View>
                         <View className="bg-orange-100 px-3 py-1 rounded-full">
                           <Text className="text-orange-600 text-xs font-bold">
@@ -239,12 +259,36 @@ const SubscriptionScreen = () => {
                                   {meal.type}
                                 </Text>
                               </View>
-                              <TouchableOpacity
-                                onPress={() => handleSkipMeal(day.date, meal.type)}
-                                className="bg-red-50 px-3 py-1 rounded-lg"
-                              >
-                                <Text className="text-red-600 text-xs font-bold">Skip</Text>
-                              </TouchableOpacity>
+
+                              <View className=" ">
+                                {/* your existing design - unchanged */}
+                                <View className="flex-row gap-x-3">
+                                  <TouchableOpacity
+                                        onPress={() => handleViewMeal(meal)}
+                                    className="bg-green-50 px-3 py-1 rounded-lg"
+                                  >
+                                    <Text className="text-green-600 text-xs font-bold">View</Text>
+                                  </TouchableOpacity>
+
+                                  <TouchableOpacity
+                                      onPress={() => handleSkipMeal("2024-01-16", "lunch")}
+                                    className="bg-red-50 px-3 py-1 rounded-lg"
+                                  >
+                                    <Text className="text-red-600 text-xs font-bold">Skip</Text>
+                                  </TouchableOpacity>
+                                </View>
+
+                                {/* Modal (added here) */}
+                                {selectedMeal && (
+                                  <MealDetailModal
+                                    isVisible={isModalVisible}
+                                    onClose={() => setModalVisible(false)}
+                                    meal={selectedMeal}
+                                  />
+                                )}
+                              </View>
+
+
                             </View>
                             <Text className="text-gray-700 text-sm leading-5 mb-2">
                               {meal.menu}
