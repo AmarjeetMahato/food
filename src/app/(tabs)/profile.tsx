@@ -16,13 +16,13 @@ const Profile = () => {
 
   return (
     <SafeAreaView edges={["top"]} className="flex-1 bg-gray-100">
-      <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+      <ScrollView contentContainerStyle={{ paddingBottom:10 }}>
         <View className="min-h-screen bg-gray-100">
           <View className="pb-10">
             {/* Header with Cover & Profile */}
             <View className="bg-white shadow-lg rounded-b-3xl overflow-hidden">
               {/* Cover Photo */}
-              <View className="h-30 bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 relative">
+              <View className="h-[6rem] bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 relative">
                 <View className="absolute top-4 right-4">
                   <View className="bg-white/30 backdrop-blur-sm p-2 rounded-full">
                     <Ionicons name="create-outline" size={20} color="white" />
@@ -297,14 +297,6 @@ const Profile = () => {
             </Pressable>
 
 
-            {/* Logout Button */}
-            <View className="mt-8 mx-4">
-              <TouchableOpacity className="w-full bg-red-500 py-4 rounded-2xl shadow-lg active:opacity-80">
-                <Text className="text-white font-bold text-base text-center">
-                  Logout
-                </Text>
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
       </ScrollView>
