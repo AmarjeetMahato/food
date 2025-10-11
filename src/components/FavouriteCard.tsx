@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -13,9 +13,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { MaterialIcons, AntDesign, FontAwesome, Ionicons, Entypo, SimpleLineIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Animated } from "react-native";
-import { Easing } from "react-native";
-
 
 const { width } = Dimensions.get("window");
 const CARD_HEIGHT = 400; // ✅ taller since meta is separate
@@ -102,69 +99,73 @@ const foodItems = [
     { id: 5, label: "Chef’s Special Picks" },
   ];
 
-export default function RecommandedMenu() {
-
-
+export default function FavouriteCard() {
   const router = useRouter();
-   const [likedIds, setLikedIds] = useState<string[]>([]);
-  const rotateAnimRefs = useRef<{ [key: string]: Animated.Value }>({});
-
-  const toggleLike = (id: string) => {
-    if (!rotateAnimRefs.current[id]) rotateAnimRefs.current[id] = new Animated.Value(0);
-
-    // Animate 360 rotation
-    rotateAnimRefs.current[id].setValue(0);
-    Animated.timing(rotateAnimRefs.current[id], {
-      toValue: 1,
-      duration: 500,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true,
-    }).start();
-
-    setLikedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
-  };
 
   return (
-    <View className="mt-2">
+    <View className="">
+      <View className="px-6 py-3 mb-4 bg-gray-50 border-b border-gray-100 flex-row items-center">
+  {/* Back Button */}
+  <TouchableOpacity
+    onPress={() => router.back()}
+    className="p-2 bg-white rounded-full shadow-md mr-4"
+  >
+    <Ionicons name="chevron-back" size={24} color="#1F2937" />
+  </TouchableOpacity>
 
-       <FlatList
-      data={foodItems}
-      keyExtractor={(item) => item.id}
-      scrollEnabled={false} // main ScrollView handles scroll
-      showsVerticalScrollIndicator={false}
-      ItemSeparatorComponent={() => <View style={{ height: GAP }} />}
-      contentContainerStyle={{ paddingBottom: 40, alignItems: "center" }}
-      renderItem={({ item }) => {
-        const rotation = rotateAnimRefs.current[item.id]
-          ? rotateAnimRefs.current[item.id].interpolate({
-              inputRange: [0, 1],
-              outputRange: ["0deg", "360deg"],
-            })
-          : "0deg";
+  {/* Title & Subtitle */}
+  <View className="flex-1">
+    <View className="flex-row items-center gap-2">
+      <Text className="text-2xl font-bold text-gray-900">Favorites</Text>
+      <View className="bg-red-100 px-2 py-0.5 rounded-full">
+        <Text className="text-red-600 font-bold text-xs">12</Text>
+      </View>
+    </View>
+    <Text className="text-sm text-gray-500 mt-1">
+      Your saved favorite dishes
+    </Text>
+  </View>
 
-        const isLiked = likedIds.includes(item.id);
-
-        return (
+  {/* Heart Icon */}
+  {/* <View className="bg-red-50 p-3 rounded-full">
+    <Ionicons name="heart" size={24} color="#FF6347" />
+  </View> */}
+</View>
+      <FlatList
+        data={foodItems}
+        keyExtractor={(item) => item.id}
+        // scrollEnabled={false} // ✅ main ScrollView handles scroll
+        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={() => <View style={{ height: GAP }} />}
+        contentContainerStyle={{
+          paddingBottom: 40,
+          alignItems: "center",
+        }}
+        renderItem={({ item }) => (
           <Pressable
-            onPress={() =>
-              router.push({
-                pathname: "/SinglePage",
-                params: { item: JSON.stringify(item) },
-              })
-            }
+            // onPress={() =>
+            //   router.push({
+            //     pathname: "/SinglePage",
+            //     params: { item: JSON.stringify(item) },
+            //   })
+            // }
           >
             <View
               className="rounded-2xl overflow-hidden bg-white shadow-lg"
-              style={{ width: width - 24, alignSelf: "center" }}
+              style={{
+                width: width - 24,
+                alignSelf: "center",
+              }}
             >
               {/* 🍔 Image Section */}
               <View className="relative">
                 <Image
                   source={{ uri: item.image }}
                   className="w-full"
-                  style={{ height: IMAGE_HEIGHT, resizeMode: "cover" }}
+                  style={{
+                    height: IMAGE_HEIGHT,
+                    resizeMode: "cover",
+                  }}
                 />
 
                 {/* 🔝 Price + Favorite + Offer */}
@@ -183,90 +184,117 @@ export default function RecommandedMenu() {
                         colors={["#FF8C00", "#FF6347"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
-                        style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 }}
+                        style={{
+                          paddingHorizontal: 10,
+                          paddingVertical: 4,
+                          borderRadius: 20,
+                        }}
                       >
-                        <Text className="text-white font-bold text-xs">{item.offer}</Text>
+                        <Text className="text-white font-bold text-xs">
+                          {item.offer}
+                        </Text>
                       </LinearGradient>
                     )}
                   </View>
 
                   {/* ❤️ Favorite Icon */}
-                  <View className="p-2 rounded-full" style={{ backgroundColor: "rgba(0,0,0,0.3)" }}>
-                    <Pressable onPress={() => toggleLike(item.id)}>
-                      <Animated.View style={{ transform: [{ rotate: rotation }] }}>
-                        {isLiked ? (
-                          <MaskedView
-                            maskElement={<MaterialIcons name="favorite" size={28} color="white" />}
-                          >
-                            <LinearGradient
-                              colors={["#FF7E00", "#FF3D00"]}
-                              start={{ x: 0, y: 0 }}
-                              end={{ x: 1, y: 1 }}
-                              style={{ width: 28, height: 28 }}
-                            />
-                          </MaskedView>
-                        ) : (
-                             <Ionicons 
-                                        name={"heart-outline"} 
-                                        size={28} 
-                                        color={"white"} 
-                                      />
-                        )}
-                      </Animated.View>
-                    </Pressable>
-                  </View>
+                  <MaskedView
+                    maskElement={
+                      <MaterialIcons name="favorite" size={28} color="white" />
+                    }
+                  >
+                    <LinearGradient
+                      colors={["#FF7E00", "#FF3D00"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={{ width: 28, height: 28 }}
+                    />
+                  </MaskedView>
                 </View>
               </View>
 
               {/* 🍽️ Meta Info Section (Below Image) */}
-              <View className="flex-1 px-4 py-3">
+              <View className="flex-1 px-4 py-3 ">
                 {/* Title + Rating */}
                 <View className="flex-row items-start justify-between">
-                  <View className="flex-1 pr-2">
-                    <Text className="text-gray-900 font-extrabold text-[18px]">{item.name}</Text>
-                    {item.desc && <Text className="text-gray-900 text-[12px] mt-1">{item.desc}</Text>}
-                  </View>
+  <View className="flex-1 pr-2">
+    <Text className="text-gray-900 font-extrabold text-[18px]">
+      {item.name}
+    </Text>
+    {item.desc && (
+      <Text className="text-gray-900 text-[12px] mt-1">
+        {item.desc}
+      </Text>
+    )}
+  </View>
 
-                  {/* Rating Box */}
-                  <View
-                    className="flex-row items-center bg-[#006400] rounded-md py-1 px-2"
-                    style={{ alignSelf: "flex-start" }}
-                  >
-                    <AntDesign name="star" size={16} color="#FF8C00" />
-                    <Text className="ml-1 text-white font-semibold text-sm">{item.rating}</Text>
-                  </View>
-                </View>
+  {/* Rating Box */}
+  <View
+    className="flex-row items-center bg-[#006400] rounded-md py-1 px-2"
+    style={{ alignSelf: 'flex-start' }}
+  >
+    <AntDesign name="star" size={16} color="#FF8C00" />
+    <Text className="ml-1 text-white font-semibold text-sm">
+      {item.rating}
+    </Text>
+  </View>
+</View>
 
-                {/* Time & Distance */}
+
                 <View className="flex-row items-center gap-4 mt-2">
                   <View className="flex-row items-center gap-1">
-                    <Ionicons name="time-outline" size={16} color="#6b7280" />
-                    <Text className="text-gray-600 font-semibold text-[13px]">{item.time}</Text>
+                   <Ionicons name="time-outline" size={16} color="#6b7280" />
+                    <Text className="text-gray-600 font-semibold text-[15px]">{item.time}</Text>
                   </View>
 
                   <View className="flex-row items-center gap-1">
                     <SimpleLineIcons name="location-pin" size={14} color="gray" />
-                    <Text className="text-gray-600 font-semibold text-[13px]">{item.distance}</Text>
+                    <Text className="text-gray-600 font-semibold  text-[15px]">
+                      {item.distance}
+                    </Text>
                   </View>
                 </View>
 
-                {/* <View style={{ borderBottomWidth: 1, borderStyle: "dotted", borderColor: "#ccc", marginVertical: 10 }} /> */}
+                  <View
+    style={{
+      borderBottomWidth: 1,
+      borderStyle: "dotted",
+      borderColor: "#ccc",
+      marginVertical: 10,
+    }}
+  />
 
-                {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 10, gap: 10 }}>
-                  {orderData.map((order) => (
-                    <Pressable key={order.id}>
-                      <View className="bg-gray-200 px-4 py-1 rounded-full">
-                        <Text className="text-gray-500 font-semibold text-sm text-center">{order.label}</Text>
-                      </View>
-                    </Pressable>
-                  ))}
-                </ScrollView> */}
+               <View >
+
+
+      {/* Horizontal Scrollable Cards */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: 10,
+          gap: 10,
+        }}
+      >
+        {orderData.map((item) => (
+  <Pressable key={item.id}>
+    <View
+     className=" bg-gray-200 px-4 py-1 rounded-full "
+    >
+      <Text className="text-gray-500 font-semibold text-sm text-center">
+        {item.label}
+      </Text>
+    </View>
+  </Pressable>
+))}
+
+      </ScrollView>
+    </View>
               </View>
             </View>
           </Pressable>
-        );
-      }}
-    />
+        )}
+      />
     </View>
   );
 }

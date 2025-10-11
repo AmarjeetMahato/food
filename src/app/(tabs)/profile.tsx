@@ -22,7 +22,7 @@ const Profile = () => {
             {/* Header with Cover & Profile */}
             <View className="bg-white shadow-lg rounded-b-3xl overflow-hidden">
               {/* Cover Photo */}
-              <View className="h-30 bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 relative">
+              <View className="h-[7rem] bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 relative">
                 <View className="absolute top-4 right-4">
                   <View className="bg-white/30 backdrop-blur-sm p-2 rounded-full">
                     <Ionicons name="create-outline" size={20} color="white" />
@@ -253,8 +253,8 @@ const Profile = () => {
                 <View className="bg-white rounded-2xl shadow-md overflow-hidden">
                   <View className="flex-row items-center justify-between p-4">
                     <View className="flex-row items-center gap-4">
-                      <View className="w-10 h-10 bg-red-100 rounded-full items-center justify-center">
-                        <MaterialIcons name="payment" size={24} color="red" />
+                      <View className="w-10 h-10 bg-green-100 rounded-full items-center justify-center">
+                        <MaterialIcons name="payment" size={24} color="green" />
                       </View>
                       <View>
                         <Text className="font-semibold text-gray-800">
@@ -262,6 +262,35 @@ const Profile = () => {
                         </Text>
                         <Text className="text-xs text-gray-500">
                           App preferences
+                        </Text>
+                      </View>
+                    </View>
+                    <Ionicons name="chevron-forward-outline" size={20} color="gray" />
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+
+                 <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => router.push("/favourite")} // redirect to /order page
+            >
+              <View className="mt-6 mx-4">
+                <Text className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                  favourite
+                </Text>
+                <View className="bg-white rounded-2xl shadow-md overflow-hidden">
+                  <View className="flex-row items-center justify-between p-4">
+                    <View className="flex-row items-center gap-4">
+                      <View className="w-10 h-10 bg-red-100 rounded-full items-center justify-center">
+                       <Entypo name="heart-outlined" size={24} color="red" />
+                      </View>
+                      <View>
+                        <Text className="font-semibold text-gray-800">
+                          Favourite
+                        </Text>
+                        <Text className="text-xs text-gray-500">
+                            Quick Access to Your Likes
                         </Text>
                       </View>
                     </View>
@@ -296,15 +325,6 @@ const Profile = () => {
               </View>
             </Pressable>
 
-
-            {/* Logout Button */}
-            <View className="mt-8 mx-4">
-              <TouchableOpacity className="w-full bg-red-500 py-4 rounded-2xl shadow-lg active:opacity-80">
-                <Text className="text-white font-bold text-base text-center">
-                  Logout
-                </Text>
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
       </ScrollView>

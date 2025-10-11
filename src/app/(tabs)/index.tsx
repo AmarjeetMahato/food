@@ -1,22 +1,33 @@
 import { AntDesign, Ionicons, Entypo } from "@expo/vector-icons";
-import React from "react";
-import { Image, Dimensions, Text, View, FlatList, Pressable, ScrollView, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Image, Dimensions, Text, View, FlatList, useColorScheme , ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import catgory from "../../../assets/data/catgeory.json"
-import Categories from "../../components/Categories";
-// import image from "../../../assets/image.png"
 import { Link, useRouter } from "expo-router";
 import Search from "../../components/Search";
 import MeneItems from "../../components/MeneItems";
 import RecommandedMenu from "../../components/RecommandedMenu";
+import { OffersCarousel } from "../../components/OffersCarousel";
+import { StatusBar } from "react-native";
+import FoodCardSkeleton from "../../components/FoodCardSkeleton";
 
 export default function HomeScreen() {
+    const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 2000); // show skeleton for 2s
+    return () => clearTimeout(timer);
+  }, []);
+  const colorScheme = useColorScheme();
   const router = useRouter()
   const notificationCount = 1
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 bg-gray-100 px-2">
+       <StatusBar
+  backgroundColor={colorScheme === "dark" ? "#000" : "#FFF"}
+  barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
+/>;
       <ScrollView
         horizontal={false}          // vertical scrolling (default)
         showsVerticalScrollIndicator={false}  // show scrollbar
@@ -43,7 +54,7 @@ export default function HomeScreen() {
             <View className="bg-gray-200 p-3 rounded-full items-center justify-center">
               <Entypo name="bell" size={18} color="gray" />
             </View>
-            {/* Notification Badge */}
+      
             {notificationCount > 0 && (
               <View className="absolute -top-2 right-0 w-6 h-6 bg-orange-400 rounded-full border border-white items-center justify-center">
                 <Text className="text-white text-xs font-bold">{notificationCount}</Text>
@@ -53,26 +64,25 @@ export default function HomeScreen() {
 
         </View>
 
-        <View className="mt-3">
-          {/* First subtle line */}
-          <Text className="text-[14px] text-gray-500">Craving something tasty?</Text>
-
-          {/* Second highlighted line */}
-          <Text style={{ fontFamily: "Montserrat" }} className="text-[20px] font-bold mt-1  text-gray-900">
-            <Ionicons name="fast-food-sharp" size={22} color="#FF7E5F" /> Eat Fresh Today!
-          </Text>
-        </View>
-
         <Search />
 
+         <OffersCarousel/>
+
         <Text
-          className="uppercase text-gray-800 mt-3 text-[16px] tracking-widest font-bold"
+          className="uppercase text-gray-800 mt-3 text-[16px] tracking-widest font-semibold"
           style={{ fontFamily: "Poppins-Bold" }}
         >Category</Text>
         <MeneItems />
 
-        <Text style={{ fontFamily: "Roboto-Regular" }} className=" uppercase text-gray-600 mt-3 text-[15px] tracking-widest font-bold">Recommanded for you</Text>
-        <RecommandedMenu />
+    <Text
+  style={{ fontFamily: "Poppins-SemiBold" }}
+  className="uppercase text-gray-700 mt-3 text-[15px] tracking-wider"
+>
+  Recommended for You
+</Text>
+  {loading ? <FoodCardSkeleton /> : <RecommandedMenu />}
+
+
       </ScrollView>
 
     </SafeAreaView>

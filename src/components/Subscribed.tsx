@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import MealDetailModal from './ModelMealDetails';
-import CustomMealModal from './ModelMealDetails';
+import MealDetailModal from '../app/(screens)/messfooddetails';
 
 interface Meal {
   type: string;
