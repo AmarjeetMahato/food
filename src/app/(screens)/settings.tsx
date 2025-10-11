@@ -138,7 +138,7 @@ const renderIcon = (item: MenuItem) => {
         <SafeAreaView  className="flex-1 bg-white">
          
                 {/* Header Section */}
-                 <View className="px-6 pt-10 pb-6 bg-gray-50 border-b border-gray-100 flex-row items-center">
+                 <View className="px-6 pt-5 pb-6 bg-gray-50 border-b border-gray-100 flex-row items-center">
       {/* Back Button */}
       <TouchableOpacity
         onPress={()=> router.back()}
