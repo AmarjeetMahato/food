@@ -2,15 +2,39 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React from "react";
 import { LinearGradient } from 'expo-linear-gradient';
+import { ArrowLeft, Wallet2 } from "lucide-react-native";
+import { router } from "expo-router";
 
 export default function Wallet() {
   return (
     <SafeAreaView edges={["bottom"]} className="flex-1 bg-gray-50">
       <ScrollView>
         {/* Header */}
-        <View className="px-6 pt-4 pb-2">
-          <Text className="text-2xl font-bold text-gray-800">My Wallet</Text>
+       <View className="bg-white shadow-xl">
+      <LinearGradient
+        colors={["#FFFFFF", "#FFFBEB"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        className="px-5 pt-4 pb-3"
+      >
+        {/* Header Row */}
+        <View className="flex-row items-center gap-x-4">
+          <TouchableOpacity
+            onPress={() => router.back()}
+            className="p-2.5 bg-white rounded-2xl shadow-md active:bg-gray-50"
+          >
+            <ArrowLeft size={22} color="#374151" />
+          </TouchableOpacity>
+
+          <View className="flex-1 flex-row items-center">
+            <Text className="text-2xl font-bold text-gray-900 ml-2">
+              My Wallet
+            </Text>
+          </View>
         </View>
+
+      </LinearGradient>
+    </View>
 
         {/* Wallet Card */}
         <View className="px-6 py-4">

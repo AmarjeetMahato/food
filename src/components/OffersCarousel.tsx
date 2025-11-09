@@ -27,47 +27,52 @@ export const OffersCarousel = () => {
     <BannerDesign6 key="7" />,
   ];
 
-  // ✅ useAnimatedStyle inside component
   const animatedDotStyle = useAnimatedStyle(() => ({
-    opacity: progress.value, // Example usage (optional)
+    opacity: progress.value,
   }));
 
   return (
-    <View className="mt-2 mb-4">
-      <Carousel
-        width={width}
-        height={190}
-        autoPlay
-        autoPlayInterval={3500}
-        pagingEnabled
-        loop
-        data={banners}
-        scrollAnimationDuration={800}
-        onProgressChange={(_, absoluteProgress) => (progress.value = absoluteProgress)}
-        renderItem={({ item }) => item}
-      />
-
-      {/* Pagination Dots */}
-      <View className="flex-row justify-center mt-2">
-        {banners.map((_, index) => (
-          <Animated.View
-            key={index}
-            style={[
-              {
-                width: 8,
-                height: 8,
-                borderRadius: 4,
-                marginHorizontal: 4,
-                backgroundColor: 'orange',
-              },
-              useAnimatedStyle(() => ({
-                opacity:
-                  Math.round(progress.value % banners.length) === index ? 1 : 0.4,
-              })),
-            ]}
-          />
-        ))}
+   <View className="mt-2 mb-4 gap-x-2">
+  <Carousel
+    width={width}
+    height={190}
+    autoPlay
+    autoPlayInterval={3500}
+    pagingEnabled
+    loop
+    data={banners}
+    scrollAnimationDuration={800}
+    renderItem={({ item }) => (
+      <View
+        className="mx-2 rounded-xl overflow-hidden"
+        style={{ width: width - 20 }} // reduce width to show gap
+      >
+        {item}
       </View>
-    </View>
+    )}
+  />
+
+  <View className="flex-row justify-center mt-2">
+    {banners.map((_, index) => (
+      <Animated.View
+        key={index}
+        style={[
+          {
+            width: 8,
+            height: 8,
+            borderRadius: 4,
+            marginHorizontal: 4,
+            backgroundColor: 'orange',
+          },
+          useAnimatedStyle(() => ({
+            opacity:
+              Math.round(progress.value % banners.length) === index ? 1 : 0.4,
+          })),
+        ]}
+      />
+    ))}
+  </View>
+</View>
+
   );
 };

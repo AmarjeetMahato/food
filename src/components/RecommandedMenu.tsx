@@ -18,7 +18,7 @@ import { Easing } from "react-native";
 
 
 const { width } = Dimensions.get("window");
-const CARD_HEIGHT = 400; // ✅ taller since meta is separate
+const CARD_HEIGHT = 400; 
 const IMAGE_HEIGHT = 180;
 const GAP = 15;
 
@@ -112,7 +112,6 @@ export default function RecommandedMenu() {
   const toggleLike = (id: string) => {
     if (!rotateAnimRefs.current[id]) rotateAnimRefs.current[id] = new Animated.Value(0);
 
-    // Animate 360 rotation
     rotateAnimRefs.current[id].setValue(0);
     Animated.timing(rotateAnimRefs.current[id], {
       toValue: 1,
@@ -132,10 +131,10 @@ export default function RecommandedMenu() {
        <FlatList
       data={foodItems}
       keyExtractor={(item) => item.id}
-      scrollEnabled={false} // main ScrollView handles scroll
+      scrollEnabled={false} 
       showsVerticalScrollIndicator={false}
       ItemSeparatorComponent={() => <View style={{ height: GAP }} />}
-      contentContainerStyle={{ paddingBottom: 40, alignItems: "center" }}
+      contentContainerStyle={{ alignItems: "center" }}
       renderItem={({ item }) => {
         const rotation = rotateAnimRefs.current[item.id]
           ? rotateAnimRefs.current[item.id].interpolate({
@@ -144,7 +143,7 @@ export default function RecommandedMenu() {
             })
           : "0deg";
 
-        const isLiked = likedIds.includes(item.id);
+        const isLiked = likedIds.includes(item.id)
 
         return (
           <Pressable
@@ -156,7 +155,7 @@ export default function RecommandedMenu() {
             }
           >
             <View
-              className="rounded-2xl overflow-hidden bg-white shadow-lg"
+              className="rounded-2xl  overflow-hidden bg-white shadow-lg"
               style={{ width: width - 24, alignSelf: "center" }}
             >
               {/* 🍔 Image Section */}
@@ -264,9 +263,9 @@ export default function RecommandedMenu() {
               </View>
             </View>
           </Pressable>
-        );
+        )
       }}
     />
     </View>
-  );
+  )
 }

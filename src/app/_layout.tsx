@@ -7,11 +7,10 @@ export default function RootLayout() {
                <Stack.Screen name="(screens)/splash" options={{ headerShown: false }} />
 
          <Stack.Screen name="(screens)/category" options={{
-            headerShown: true, // ✅ show header
-            title: "Category", // ✅ set title
+            headerShown: false, // ✅ show header
             headerTintColor: "black", // ✅ back arrow color
             headerTitleAlign: "center", // ✅ center the title
-            animation: "fade_from_bottom",
+            animation: "slide_from_right",
          }} />
 
       <Stack.Screen name="(screens)/SinglePage" options={{
@@ -58,16 +57,29 @@ export default function RootLayout() {
 
 
          <Stack.Screen name="(screens)/orderhistory" options={{
-            headerShown: true, // ✅ show header
-              title:"Orders History",
+            headerShown: false, // ✅ show header
             headerTintColor: "black", // ✅ back arrow color
             headerTitleAlign: "center", // ✅ center the title
             animation:"slide_from_right",
          }} />
 
+             <Stack.Screen name="(screens)/address" options={{
+            headerShown: false,
+            headerTintColor: "black", // ✅ back arrow color
+            headerTitleAlign: "center", // ✅ center the title
+            animation:"slide_from_right",
+         }} />
+
+               <Stack.Screen name="(screens)/helpandsupport" options={{
+            headerShown: false,
+            headerTintColor: "black", // ✅ back arrow color
+            headerTitleAlign: "center", // ✅ center the title
+            animation:"slide_from_right",
+         }} />
+
+
                <Stack.Screen name="(screens)/paymentdetails" options={{
-            headerShown: true, // ✅ show header
-              title:"Orders History",
+            headerShown: false, // ✅ show header
             headerTintColor: "black", // ✅ back arrow color
             headerTitleAlign: "center", // ✅ center the title
             animation:"slide_from_right",
@@ -107,7 +119,12 @@ export default function RootLayout() {
          />
    
    
-   
+           <Stack.Screen name="(screens)/notificationpage" options={{
+            headerShown: false, // ✅ show header
+            headerTintColor: "black", // ✅ back arrow color
+            headerTitleAlign: "center", // ✅ center the title
+            animation: "slide_from_right",
+         }} />
    
    
    
@@ -121,13 +138,33 @@ export default function RootLayout() {
          }} />
 
            <Stack.Screen name="(screens)/wallet" options={{
-            headerShown: true, // ✅ show header
-            title: "wallet", // ✅ set title
+            headerShown: false, // ✅ show header
             headerTintColor: "black", // ✅ back arrow color
             headerTitleAlign: "center", // ✅ center the title
             animation: "slide_from_right",
          }} />
 
+
+            <Stack.Screen name="(screens)/mealsdetails" options={{
+            headerShown: false, // ✅ show header
+            headerTintColor: "black", // ✅ back arrow color
+            headerTitleAlign: "center", // ✅ center the title
+            animation: "slide_from_right",
+         }} />
+
+               <Stack.Screen name="(screens)/auth" options={{
+            headerShown: false, // ✅ show header
+            headerTintColor: "black", // ✅ back arrow color
+            headerTitleAlign: "center", // ✅ center the title
+            animation: "slide_from_right",
+         }} />
+
+          <Stack.Screen name="(screens)/otp" options={{
+            headerShown: false, // ✅ show header
+            headerTintColor: "black", // ✅ back arrow color
+            headerTitleAlign: "center", // ✅ center the title
+            animation: "slide_from_right",
+         }} />
 
       </Stack>
    )

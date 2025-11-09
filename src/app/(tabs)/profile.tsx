@@ -19,68 +19,8 @@ const Profile = () => {
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         <View className="min-h-screen bg-gray-100">
           <View className="pb-10">
-            {/* Header with Cover & Profile */}
-            <View className="bg-white shadow-lg rounded-b-3xl overflow-hidden">
-              {/* Cover Photo */}
-              <View className="h-[7rem] bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 relative">
-                <View className="absolute top-4 right-4">
-                  <View className="bg-white/30 backdrop-blur-sm p-2 rounded-full">
-                    <Ionicons name="create-outline" size={20} color="white" />
-                  </View>
-                </View>
-              </View>
+       
 
-              {/* Profile Info */}
-              <View className="relative px-6 pb-6">
-                <View className="flex flex-col items-center -mt-20">
-                  <View className="relative">
-                    <Image
-                      source={{
-                        uri: "https://images.unsplash.com/photo-1615109398623-88346a601842?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                      }}
-                      className="w-32 h-32 rounded-full border-4 border-white shadow-xl"
-                    />
-                    <View className="absolute bottom-1 right-1 bg-orange-500 p-2 rounded-full shadow-lg">
-                      <Ionicons name="camera-outline" size={18} color="white" />
-                    </View>
-                  </View>
-
-                  <Text className="text-2xl font-bold text-gray-900 mt-4">
-                    Amar Mahato
-                  </Text>
-                  <View className="flex-row items-center mt-1">
-                    <Ionicons name="location-sharp" size={20} color="black" />
-                    <Text className="text-gray-500 text-sm ml-1">
-                      Jamshedpur, Jharkhand
-                    </Text>
-                  </View>
-
-                  {/* Stats */}
-                  <View className="flex-row gap-4 mt-6 w-full max-w-sm rounded-lg">
-                    <View className="flex-1 bg-orange-100 rounded-3xl p-4 items-center ">
-                      <Text className="text-2xl font-bold text-orange-600">
-                        12
-                      </Text>
-                      <Text className="text-xs text-gray-600 mt-1">Orders</Text>
-                    </View>
-                    <View className="flex-1 bg-blue-100 rounded-3xl p-4 items-center">
-                      <Text className="text-2xl font-bold text-blue-600">5</Text>
-                      <Text className="text-xs text-gray-600 mt-1">
-                        History
-                      </Text>
-                    </View>
-                    <View className="flex-1 bg-pink-100 rounded-3xl p-4 items-center">
-                      <Text className="text-2xl font-bold text-pink-600">3</Text>
-                      <Text className="text-xs text-gray-600 mt-1">
-                        Favorites
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            {/* Account Section */}
             <View className="mt-6 mx-4">
               <Text className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
                 Account
@@ -112,8 +52,7 @@ const Profile = () => {
                   />
                 </Pressable>
 
-                {/* Remaining Food */}
-               {/* Chat Support */}
+          
 <Pressable onPress={()=> router.push("/chat")} className="flex-row items-center justify-between p-4 border-b border-gray-100">
   <View className="flex-row items-center gap-4">
     <View className="w-10 h-10 bg-blue-100 rounded-full items-center justify-center">

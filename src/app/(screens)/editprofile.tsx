@@ -1,180 +1,228 @@
-import React from "react";
-import { View, Text, Pressable, ScrollView } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Image } from "react-native";
+import { Camera, Edit2 } from "lucide-react-native";
+import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-interface MenuItem {
-  id: string;
-  title: string;
-  subtitle: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  iconColor: string;
-  bgColor: string;
-  onPress: () => void;
-}
+// ✅ Validation Schema
+const profileSchema = z.object({
+  fullName: z.string().min(3, "Full name must be at least 3 characters"),
+  email: z.string().email("Invalid email address"),
+  phoneNumber: z
+    .string()
+    .regex(/^[0-9]{10}$/, "Phone number must be 10 digits"),
+  gender: z.string().nonempty("Please select your gender"),
+  dateOfBirth: z.string().nonempty("Please enter your date of birth"),
+  favoriteCuisine: z.string().nonempty("Please select your favorite cuisine"),
+  dietaryPreference: z.string().nonempty("Please select your dietary preference"),
+});
 
-const EditProfileScreen = () => {
-  const menuItems: MenuItem[] = [
-    {
-      id: "profile",
-      title: "Profile Details",
-      subtitle: "Update your personal information",
-      icon: "person-outline",
-      iconColor: "#3b82f6",
-      bgColor: "#dbeafe",
-      onPress: () => console.log("Profile Details"),
+type ProfileData = z.infer<typeof profileSchema>;
+type EditMode = { [K in keyof ProfileData]: boolean };
+
+export default function EditProfile() {
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<ProfileData>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      fullName: "John Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "9876543210",
+      gender: "Male",
+      dateOfBirth: "15/03/1995",
+      favoriteCuisine: "Indian",
+      dietaryPreference: "Non-Veg",
     },
-    {
-      id: "notifications",
-      title: "Notifications",
-      subtitle: "Manage notification preferences",
-      icon: "notifications-outline",
-      iconColor: "#8b5cf6",
-      bgColor: "#ede9fe",
-      onPress: () => console.log("Notifications"),
-    },
-    {
-      id: "meals",
-      title: "Meal Preferences",
-      subtitle: "Customize your meal plans",
-      icon: "restaurant-outline",
-      iconColor: "#10b981",
-      bgColor: "#d1fae5",
-      onPress: () => console.log("Meal Preferences"),
-    },
-    {
-      id: "health",
-      title: "Health Metrics",
-      subtitle: "Track your fitness goals",
-      icon: "fitness-outline",
-      iconColor: "#f59e0b",
-      bgColor: "#fef3c7",
-      onPress: () => console.log("Health Metrics"),
-    },
-    {
-      id: "privacy",
-      title: "Privacy & Security",
-      subtitle: "Manage your account security",
-      icon: "shield-checkmark-outline",
-      iconColor: "#ef4444",
-      bgColor: "#fee2e2",
-      onPress: () => console.log("Privacy & Security"),
-    },
-    {
-      id: "payment",
-      title: "Payment Methods",
-      subtitle: "Manage your payment options",
-      icon: "card-outline",
-      iconColor: "#06b6d4",
-      bgColor: "#cffafe",
-      onPress: () => console.log("Payment Methods"),
-    },
-    {
-      id: "subscription",
-      title: "Subscription Plan",
-      subtitle: "View and manage your plan",
-      icon: "star-outline",
-      iconColor: "#f59e0b",
-      bgColor: "#fef3c7",
-      onPress: () => console.log("Subscription"),
-    },
-    {
-      id: "language",
-      title: "Language & Region",
-      subtitle: "Change app language",
-      icon: "globe-outline",
-      iconColor: "#6366f1",
-      bgColor: "#e0e7ff",
-      onPress: () => console.log("Language"),
-    },
-    {
-      id: "help",
-      title: "Help & Support",
-      subtitle: "Get help and contact support",
-      icon: "help-circle-outline",
-      iconColor: "#8b5cf6",
-      bgColor: "#ede9fe",
-      onPress: () => console.log("Help & Support"),
-    },
-    {
-      id: "about",
-      title: "About App",
-      subtitle: "Version 1.0.0",
-      icon: "information-circle-outline",
-      iconColor: "#6b7280",
-      bgColor: "#f3f4f6",
-      onPress: () => console.log("About"),
-    },
-  ];
+  });
+
+  const [editMode, setEditMode] = useState<EditMode>({
+    fullName: false,
+    email: false,
+    phoneNumber: false,
+    gender: false,
+    dateOfBirth: false,
+    favoriteCuisine: false,
+    dietaryPreference: false,
+  });
+
+  const toggleEdit = (field: keyof EditMode) => {
+    setEditMode((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
+
+  const onSubmit = (data: ProfileData) => {
+    console.log("✅ Profile Updated:", data);
+  };
+
+  // ⏺️ Text Field Renderer
+  const renderField = (
+    label: string,
+    field: keyof ProfileData,
+    required = false,
+    placeholder = ""
+  ) => {
+    const isEditing = editMode[field];
+    const value = watch(field);
+
+    return (
+      <View className="mb-6">
+        <View className="flex-row justify-between items-center mb-2">
+          <Text className="text-gray-600 text-sm font-medium">
+            {label} {required && <Text className="text-orange-500">*</Text>}
+          </Text>
+          <TouchableOpacity onPress={() => toggleEdit(field)} className="p-1 rounded">
+            <Edit2 size={18} color="#ff6b35" />
+          </TouchableOpacity>
+        </View>
+
+        <Controller
+          control={control}
+          name={field}
+          render={({ field: { onChange, value } }) =>
+            isEditing ? (
+              <TextInput
+                value={value}
+                onChangeText={onChange}
+                placeholder={placeholder}
+                className="w-full text-gray-900 text-base py-2 border-b-2 border-orange-500 bg-transparent"
+                autoFocus
+              />
+            ) : (
+              <Text className="text-gray-900 text-base py-2 border-b border-gray-300">
+                {value || "Not set"}
+              </Text>
+            )
+          }
+        />
+        {errors[field] && (
+          <Text className="text-red-500 text-xs mt-1">
+            {errors[field]?.message?.toString()}
+          </Text>
+        )}
+      </View>
+    );
+  };
+
+  // ⏺️ Dropdown Field Renderer
+  const renderDropdownField = (
+    label: string,
+    field: keyof ProfileData,
+    options: string[]
+  ) => {
+    const isEditing = editMode[field];
+    const value = watch(field);
+
+    return (
+      <View className="mb-6">
+        <View className="flex-row justify-between items-center mb-2">
+          <Text className="text-gray-600 text-sm font-medium">{label}</Text>
+          <TouchableOpacity onPress={() => toggleEdit(field)} className="p-1 rounded">
+            <Edit2 size={18} color="#ff6b35" />
+          </TouchableOpacity>
+        </View>
+
+        {isEditing ? (
+          <View className="border-b-2 border-orange-500">
+            {options.map((option) => (
+              <TouchableOpacity
+                key={option}
+                onPress={() => setValue(field, option)}
+                className={`py-2 ${value === option ? "bg-orange-100" : ""}`}
+              >
+                <Text className="text-gray-800">{option}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ) : (
+          <Text className="text-gray-900 text-base py-2 border-b border-gray-300">
+            {value || "Not set"}
+          </Text>
+        )}
+        {errors[field] && (
+          <Text className="text-red-500 text-xs mt-1">
+            {errors[field]?.message?.toString()}
+          </Text>
+        )}
+      </View>
+    );
+  };
 
   return (
-    <View className="flex-1 bg-white">
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header Section */}
-        <View className="px-6 pt-16 pb-6 bg-gray-50 border-b border-gray-100">
-          <Text className="text-2xl font-bold text-gray-900">Settings</Text>
-          <Text className="text-sm text-gray-500 mt-1">
-            Manage your account and preferences
-          </Text>
-        </View>
-
-        {/* Profile Summary Card */}
-        <View className="mx-4 my-4 p-4 bg-gray-50 rounded-2xl">
-          <View className="flex-row items-center gap-4">
-            <View className="w-16 h-16 bg-blue-100 rounded-full items-center justify-center">
-              <Text className="text-2xl">👤</Text>
-            </View>
-            <View className="flex-1">
-              <Text className="font-bold text-gray-900 text-lg">John Doe</Text>
-              <Text className="text-sm text-gray-500">john.doe@example.com</Text>
-              <Text className="text-xs text-gray-400 mt-1">Premium Member</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+    <ScrollView
+      className="flex-1 bg-white px-6 py-8"
+      contentContainerStyle={{ paddingBottom: 100 }}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* Profile Image */}
+      <View className="flex items-center mb-8">
+        <View className="relative">
+          <View className="w-28 h-28 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+            <Image
+              className="w-full h-full"
+              source={{
+                uri: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=60&w=600",
+              }}
+            />
           </View>
+
+          <TouchableOpacity className="absolute bottom-0 right-0 w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center shadow-lg">
+            <Camera size={20} color="#fff" />
+          </TouchableOpacity>
         </View>
 
-        {/* Menu Items */}
-        <View className="px-4">
-          {menuItems.map((item, index) => (
-            <Pressable
-              key={item.id}
-              onPress={item.onPress}
-              className="flex-row items-center justify-between py-4 border-b border-gray-100"
-            >
-              <View className="flex-row items-center gap-4">
-                <View
-                  className="w-10 h-10 rounded-full items-center justify-center"
-                  style={{ backgroundColor: item.bgColor }}
-                >
-                  <Ionicons name={item.icon} size={22} color={item.iconColor} />
-                </View>
-                <View>
-                  <Text className="font-semibold text-gray-800">
-                    {item.title}
-                  </Text>
-                  <Text className="text-xs text-gray-500">{item.subtitle}</Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
-            </Pressable>
-          ))}
-        </View>
+        <Text className="text-gray-500 text-sm mt-3">Upload Profile Picture</Text>
+      </View>
 
-        {/* Logout Button */}
-        <View className="px-4 py-6">
-          <Pressable className="flex-row items-center justify-center py-4 bg-red-50 rounded-xl border border-red-100">
-            <Ionicons name="log-out-outline" size={22} color="#ef4444" />
-            <Text className="font-semibold text-red-600 ml-2">Logout</Text>
-          </Pressable>
-        </View>
+      {/* Basic Info */}
+      <View className="mb-8">
+        <Text className="text-xl font-bold text-gray-800 mb-4">Basic Information</Text>
+        {renderField("Full Name", "fullName", true, "Enter your full name")}
+        {renderField("Email Address", "email", true, "Enter your email")}
+        {renderField("Phone Number", "phoneNumber", true, "Enter your phone")}
+      </View>
 
-        {/* Footer */}
-        <View className="items-center pb-8">
-          <Text className="text-xs text-gray-400">App Version 1.0.0</Text>
-          <Text className="text-xs text-gray-400 mt-1">© 2024 Your Company</Text>
-        </View>
-      </ScrollView>
-    </View>
+      {/* Personal Preferences */}
+      <View className="mb-8">
+        <Text className="text-xl font-bold text-gray-800 mb-4">Personal Preferences</Text>
+        {renderDropdownField("Gender", "gender", [
+          "Male",
+          "Female",
+          "Other",
+          "Prefer not to say",
+        ])}
+        {renderField("Date of Birth", "dateOfBirth", false, "DD/MM/YYYY")}
+        {renderDropdownField("Favorite Cuisine", "favoriteCuisine", [
+          "Indian",
+          "Chinese",
+          "Italian",
+          "Mexican",
+          "Thai",
+          "Japanese",
+          "Continental",
+          "Mediterranean",
+        ])}
+        {renderDropdownField("Dietary Preference", "dietaryPreference", [
+          "Veg",
+          "Non-Veg",
+          "Vegan",
+          "Jain",
+          "Eggetarian",
+          "Gluten-Free",
+        ])}
+      </View>
+
+      {/* Submit */}
+      <TouchableOpacity
+        onPress={handleSubmit(onSubmit)}
+        className="w-full bg-orange-500 rounded-xl py-4 items-center justify-center"
+      >
+        <Text className="text-white font-semibold text-base">Save Changes</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
-};
-
-export default EditProfileScreen;
+}

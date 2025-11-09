@@ -1,20 +1,28 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text, Image, TouchableOpacity, Dimensions, ScrollView, Animated, Easing } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import FoodDetailLoadingSkeleton from "../../skeltons/FoodDetailLoadingSkeleton";
+import SinglePageSkeleton from "../../skeltons/SinglePageSkeleton";
 
 const { width } = Dimensions.get("window");
 
 const SinglePage = () => {
+    const [loading, setLoading] = useState<boolean>(true);
+  
+    useEffect(() => {
+      const timer  = setTimeout(() => setLoading(false), 2000); // show skeleton for 2s
+      return () => clearTimeout(timer);
+    }, []);
   const insets = useSafeAreaInsets();
   const [count, setCount] = useState<number>(1);
   const [isFavorite, setIsFavorite] = useState(false);
   const router = useRouter();
   
-  const biryaniImage = "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800&auto=format&fit=crop&q=60";
+  const biryaniImage = "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687";
   const price = 299;
     const rotateAnim = useRef(new Animated.Value(0)).current;
 
@@ -40,8 +48,11 @@ const SinglePage = () => {
     outputRange: ["0deg", "360deg"],
   });
 
-  return (
-    <SafeAreaView className="flex-1 bg-white">
+  if(loading){
+    return <SinglePageSkeleton/>
+  }
+
+  return ( <SafeAreaView className="flex-1 bg-white">
       <ScrollView 
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
@@ -82,6 +93,7 @@ const SinglePage = () => {
               top: 16,
               right: 16,
               transform: [{ rotate: rotation }],
+               
             }}
           >
             <TouchableOpacity
@@ -93,17 +105,17 @@ const SinglePage = () => {
                 shadowOpacity: 0.3,
                 shadowRadius: 8,
                 elevation: 8,
+                backgroundColor: "rgba(0,0,0,0.3)"
               }}
             >
               <Ionicons
                 name={isFavorite ? "heart" : "heart-outline"}
                 size={24}
-                color={isFavorite ? "#ea580c" : "#1f2937"}
+                color={isFavorite ? "#ea580c" : "white"}
               />
             </TouchableOpacity>
           </Animated.View>
 
-          {/* Special Badge */}
           <View className="absolute bottom-4 right-4">
             <LinearGradient
               colors={["#dc2626", "#991b1b"]}
@@ -124,9 +136,8 @@ const SinglePage = () => {
           </View>
         </View>
 
-        {/* Content Section */}
+     
         <View className="px-5 pt-5">
-          {/* Title & Price */}
           <View className="mb-5">
             <View className="flex-row items-start justify-between mb-2">
               <View className="flex-1 pr-3">
@@ -152,7 +163,7 @@ const SinglePage = () => {
               </View>
             </View>
 
-            {/* Rating & Stats */}
+         
             <View className="flex-row items-center gap-4 mt-2">
               <View className="flex-row items-center gap-1 bg-[#006400] px-2.5 py-1 rounded-lg">
                  <AntDesign name="star" size={16} color="#FF8C00" />
@@ -169,7 +180,6 @@ const SinglePage = () => {
             </View>
           </View>
 
-          {/* Description */}
           <View className="mb-5">
             <Text className="text-base text-gray-700 leading-6">
               Aromatic basmati rice layered with succulent chicken pieces, slow-cooked 
@@ -197,7 +207,6 @@ const SinglePage = () => {
             </View>
           </View>
 
-          {/* What's Inside */}
           <View className="mb-6">
             <View className="flex-row items-center mb-3">
               <LinearGradient
@@ -228,7 +237,6 @@ const SinglePage = () => {
             </View>
           </View>
 
-          {/* Special Note */}
           <View className="mb-6">
             <View className="flex-row items-center mb-3">
               <LinearGradient
@@ -256,7 +264,6 @@ const SinglePage = () => {
             </View>
           </View>
 
-          {/* Reviews Section */}
           <View className="mb-6">
             <View className="flex-row items-center justify-between mb-3">
               <View className="flex-row items-center">
@@ -272,7 +279,6 @@ const SinglePage = () => {
               </TouchableOpacity>
             </View>
 
-            {/* Review Card */}
             <View className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
               <View className="flex-row items-start mb-3">
                 <Image 
@@ -300,13 +306,11 @@ const SinglePage = () => {
         </View>
       </ScrollView>
 
-      {/* Fixed Bottom Cart Bar */}
       <View 
         style={{ paddingBottom: insets.bottom }}  
         className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3"
       >
         <View className="flex-row items-center gap-3">
-          {/* Quantity Selector */}
           <View 
             className="flex-row items-center bg-orange-50 rounded-2xl border border-orange-200"
             style={{
@@ -339,7 +343,6 @@ const SinglePage = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Add to Cart Button */}
           <TouchableOpacity activeOpacity={0.9} className="flex-1">
             <LinearGradient
               colors={["#fb923c", "#ea580c"]}
@@ -359,16 +362,18 @@ const SinglePage = () => {
                 elevation: 6,
               }}
             >
-              <Ionicons name="cart" size={22} color="white" />
+              {/* <Ionicons name="cart" size={22} color="white" /> */}
               <Text className="text-white font-extrabold text-lg">
-                Add to Cart • ₹{price * count}
+                Order Now  ₹{price * count}
               </Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
-  );
+    </SafeAreaView>)
+
+   
+
 };
 
 export default SinglePage;

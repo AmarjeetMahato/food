@@ -1,15 +1,35 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, TextInput, StatusBar } from "react-native";
 import React, { useState } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
+import { ArrowLeft, Download, TrendingUp, TrendingDown, Wallet } from 'lucide-react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function PaymentDetails() {
   const [activeFilter, setActiveFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const router = useRouter();
 
   const filters = ['All', 'Credits', 'Debits', 'Pending'];
 
-  const transactions = [
+type Transaction = {
+  id: number;
+  type: "credit" | "debit" | "pending";
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  amount: number;
+  status: "completed" | "pending" | "failed";
+  icon: keyof typeof Ionicons.glyphMap; // ✅ Strictly typed to valid Ionicons names
+  iconBg: string;
+  iconColor: string;
+  paymentMethod: string;
+};
+
+  const transactions:Transaction[] = [
     {
       id: 1,
       type: 'credit',
@@ -19,8 +39,9 @@ export default function PaymentDetails() {
       time: '3:45 PM',
       amount: 500,
       status: 'completed',
-      icon: '✅',
-      iconBg: 'bg-green-100',
+      icon: 'add-circle',
+      iconBg: 'bg-emerald-100',
+      iconColor: '#10B981',
       paymentMethod: 'UPI - Google Pay'
     },
     {
@@ -32,8 +53,9 @@ export default function PaymentDetails() {
       time: '7:30 PM',
       amount: -450,
       status: 'completed',
-      icon: '🍕',
-      iconBg: 'bg-red-100',
+      icon: 'restaurant',
+      iconBg: 'bg-orange-100',
+      iconColor: '#F97316',
       paymentMethod: 'Wallet'
     },
     {
@@ -45,8 +67,9 @@ export default function PaymentDetails() {
       time: '8:15 PM',
       amount: -380,
       status: 'completed',
-      icon: '🍔',
-      iconBg: 'bg-red-100',
+      icon: 'fast-food',
+      iconBg: 'bg-orange-100',
+      iconColor: '#F97316',
       paymentMethod: 'Wallet'
     },
     {
@@ -58,8 +81,9 @@ export default function PaymentDetails() {
       time: '8:20 PM',
       amount: 50,
       status: 'completed',
-      icon: '🎁',
-      iconBg: 'bg-green-100',
+      icon: 'gift',
+      iconBg: 'bg-emerald-100',
+      iconColor: '#10B981',
       paymentMethod: 'Cashback'
     },
     {
@@ -71,8 +95,9 @@ export default function PaymentDetails() {
       time: '9:00 PM',
       amount: -520,
       status: 'completed',
-      icon: '🍛',
-      iconBg: 'bg-red-100',
+      icon: 'restaurant',
+      iconBg: 'bg-orange-100',
+      iconColor: '#F97316',
       paymentMethod: 'Wallet'
     },
     {
@@ -84,8 +109,9 @@ export default function PaymentDetails() {
       time: '2:15 PM',
       amount: 1000,
       status: 'completed',
-      icon: '✅',
-      iconBg: 'bg-green-100',
+      icon: 'card',
+      iconBg: 'bg-emerald-100',
+      iconColor: '#10B981',
       paymentMethod: 'Credit Card •••• 4523'
     },
     {
@@ -97,8 +123,9 @@ export default function PaymentDetails() {
       time: '8:45 PM',
       amount: -420,
       status: 'completed',
-      icon: '🍗',
-      iconBg: 'bg-red-100',
+      icon: 'pizza',
+      iconBg: 'bg-orange-100',
+      iconColor: '#F97316',
       paymentMethod: 'Wallet'
     },
     {
@@ -110,8 +137,9 @@ export default function PaymentDetails() {
       time: '6:30 PM',
       amount: 250,
       status: 'pending',
-      icon: '⏳',
-      iconBg: 'bg-yellow-100',
+      icon: 'time',
+      iconBg: 'bg-amber-100',
+      iconColor: '#F59E0B',
       paymentMethod: 'Wallet Refund'
     }
   ];
@@ -124,51 +152,83 @@ export default function PaymentDetails() {
     return true;
   });
 
+  const totalCredits = transactions
+    .filter(t => t.type === 'credit')
+    .reduce((sum, t) => sum + t.amount, 0);
+  
+  const totalDebits = Math.abs(transactions
+    .filter(t => t.type === 'debit')
+    .reduce((sum, t) => sum + t.amount, 0));
+
+  const walletBalance = totalCredits - totalDebits;
+
   return (
-    <SafeAreaView edges={["bottom"]} className="flex-1 bg-gray-50">
-      {/* Header */}
-      <View className="px-6 pt-4 pb-3 bg-white border-b border-gray-200">
-        <Text className="text-2xl font-bold text-gray-800 mb-4">Payment History</Text>
-        
-        {/* Search Bar */}
-        <View className="bg-gray-100 rounded-xl px-4 py-3 flex-row items-center mb-4">
-          <Text className="text-gray-400 mr-2">🔍</Text>
-          <TextInput
-            placeholder="Search transactions..."
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            className="flex-1 text-gray-800"
-            placeholderTextColor="#9CA3AF"
-          />
+    <SafeAreaView className="flex-1 bg-gray-50">
+      <StatusBar barStyle="light-content" backgroundColor="#F97316" />
+
+      {/* Modern Header with Gradient */}
+      <LinearGradient
+        colors={['#F97316', '#EA580C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        className="pb-6"
+      >
+        {/* Header Top Bar */}
+        <View className="px-5 pt-4 pb-4 flex-row items-center justify-between">
+          <View className="flex-row items-center flex-1">
+            <TouchableOpacity 
+              onPress={() => router.back()} 
+              className="p-2 bg-white/20 rounded-2xl mr-4 active:bg-white/30"
+            >
+              <ArrowLeft size={22} color="#FFFFFF" />
+            </TouchableOpacity>
+            <View>
+              <Text className="text-2xl font-bold text-white">Payment History</Text>
+              <Text className="text-orange-100 text-sm mt-0.5">All transactions</Text>
+            </View>
+          </View>
+          <TouchableOpacity className="p-2.5 bg-white/20 rounded-2xl active:bg-white/30">
+            <Download size={20} color="#FFFFFF" />
+          </TouchableOpacity>
         </View>
 
-        {/* Filter Tabs */}
+     
+      </LinearGradient>
+
+
+      {/* Filter Tabs */}
+      <View className="bg-white border-b border-gray-200">
         <ScrollView 
           horizontal 
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingRight: 16 }}
+          className="px-5 py-4"
+          contentContainerStyle={{ gap: 10 }}
         >
           {filters.map((filter) => (
             <TouchableOpacity
               key={filter}
               onPress={() => setActiveFilter(filter)}
-              className="mr-3"
+              activeOpacity={0.7}
             >
               {activeFilter === filter ? (
                 <LinearGradient
-                  colors={['#f97316', '#ea580c']}
+                  colors={['#F97316', '#EA580C']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
+                  className="px-6 py-2.5"
                   style={{
-                    paddingHorizontal: 20,
-                    paddingVertical: 8,
-                    borderRadius: 9999
+                    shadowColor: '#F97316',
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 8,
+                    borderRadius:16,
+                    elevation: 6,
                   }}
                 >
                   <Text className="text-white text-sm font-bold">{filter}</Text>
                 </LinearGradient>
               ) : (
-                <View className="px-5 py-2 rounded-full bg-gray-200">
+                <View className="px-6 py-2.5 rounded-2xl bg-gray-100">
                   <Text className="text-gray-600 text-sm font-semibold">{filter}</Text>
                 </View>
               )}
@@ -177,92 +237,96 @@ export default function PaymentDetails() {
         </ScrollView>
       </View>
 
-      {/* Summary Cards */}
-      <View className="px-6 py-4 flex-row justify-between">
-        <View className="bg-white rounded-xl p-4 flex-1 mr-2 border border-gray-100">
-          <Text className="text-gray-500 text-xs mb-1">Total Credits</Text>
-          <Text className="text-green-600 text-xl font-bold">₹1,550</Text>
-        </View>
-        <View className="bg-white rounded-xl p-4 flex-1 ml-2 border border-gray-100">
-          <Text className="text-gray-500 text-xs mb-1">Total Debits</Text>
-          <Text className="text-red-600 text-xl font-bold">₹1,770</Text>
-        </View>
-      </View>
-
       {/* Transactions List */}
-      <ScrollView className="flex-1 px-6">
-        <Text className="text-sm font-semibold text-gray-500 mb-3">
+      <ScrollView 
+        className="flex-1" 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 24 }}
+      >
+        <Text className="text-sm font-bold text-gray-500 mb-3 uppercase tracking-wider">
           {filteredTransactions.length} Transactions
         </Text>
         
-        {filteredTransactions.map((transaction) => (
+        {filteredTransactions.map((transaction, index) => (
           <TouchableOpacity 
             key={transaction.id}
-            className="bg-white rounded-xl p-4 mb-3 border border-gray-100"
+            className="bg-white rounded-3xl p-4 mb-3 border border-gray-100"
+            activeOpacity={0.7}
+            style={{
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.05,
+              shadowRadius: 8,
+              elevation: 2,
+            }}
           >
-            <View className="flex-row justify-between items-start mb-3">
-              <View className="flex-row items-start flex-1">
-                <View className={`${transaction.iconBg} rounded-full p-3 mr-3`}>
-                  <Text className="text-lg">{transaction.icon}</Text>
-                </View>
-                <View className="flex-1">
-                  <Text className="text-gray-800 font-semibold text-sm mb-1">
+            <View className="flex-row items-center">
+              {/* Icon */}
+              <View className={`${transaction.iconBg} rounded-2xl p-3.5 mr-4`}>
+                <Ionicons name={transaction.icon} size={24} color={transaction.iconColor} />
+              </View>
+
+              {/* Transaction Details */}
+              <View className="flex-1">
+                <View className="flex-row items-center justify-between mb-1">
+                  <Text className="text-gray-900 font-bold text-base flex-1" numberOfLines={1}>
                     {transaction.title}
                   </Text>
-                  <Text className="text-gray-500 text-xs mb-1">
-                    {transaction.description}
+                  <Text 
+                    className={`font-bold text-lg ml-2 ${
+                      transaction.type === 'credit' ? 'text-emerald-600' : 
+                      transaction.status === 'pending' ? 'text-amber-600' : 
+                      'text-red-600'
+                    }`}
+                  >
+                    {transaction.amount > 0 ? '+' : ''}₹{Math.abs(transaction.amount)}
                   </Text>
+                </View>
+
+                <Text className="text-gray-600 text-sm mb-1.5" numberOfLines={1}>
+                  {transaction.description}
+                </Text>
+
+                <View className="flex-row items-center justify-between">
                   <Text className="text-gray-400 text-xs">
                     {transaction.date} • {transaction.time}
                   </Text>
+                  {transaction.status === 'pending' && (
+                    <View className="bg-amber-100 px-2.5 py-1 rounded-full">
+                      <Text className="text-amber-700 text-xs font-bold">Pending</Text>
+                    </View>
+                  )}
                 </View>
-              </View>
-              <View className="items-end ml-2">
-                <Text 
-                  className={`font-bold text-base mb-1 ${
-                    transaction.type === 'credit' ? 'text-green-600' : 
-                    transaction.status === 'pending' ? 'text-yellow-600' : 
-                    'text-red-600'
-                  }`}
-                >
-                  {transaction.amount > 0 ? '+' : ''} ₹{Math.abs(transaction.amount)}
-                </Text>
-                {transaction.status === 'pending' && (
-                  <View className="bg-yellow-100 px-2 py-1 rounded-full">
-                    <Text className="text-yellow-700 text-xs font-semibold">Pending</Text>
-                  </View>
-                )}
-              </View>
-            </View>
 
-            {/* Payment Method */}
-            <View className="border-t border-gray-100 pt-3">
-              <View className="flex-row items-center justify-between">
-                <Text className="text-gray-500 text-xs">Payment Method</Text>
-                <Text className="text-gray-700 text-xs font-semibold">
-                  {transaction.paymentMethod}
-                </Text>
+                {/* Payment Method */}
+                <View className="mt-2.5 pt-2.5 border-t border-gray-100">
+                  <View className="flex-row items-center">
+                    <Ionicons name="card-outline" size={12} color="#9CA3AF" />
+                    <Text className="text-gray-500 text-xs ml-1.5 flex-1" numberOfLines={1}>
+                      {transaction.paymentMethod}
+                    </Text>
+                  </View>
+                </View>
               </View>
             </View>
           </TouchableOpacity>
         ))}
 
         {filteredTransactions.length === 0 && (
-          <View className="items-center justify-center py-20">
-            <Text className="text-6xl mb-4">📭</Text>
-            <Text className="text-gray-500 text-base">No transactions found</Text>
+          <View className="items-center justify-center py-20 mt-10">
+            <View className="bg-gray-100 p-8 rounded-full mb-4">
+              <Ionicons name="receipt-outline" size={64} color="#9CA3AF" />
+            </View>
+            <Text className="text-gray-700 text-lg font-bold mb-2">
+              No transactions found
+            </Text>
+            <Text className="text-gray-500 text-sm">
+              Try adjusting your filters
+            </Text>
           </View>
         )}
       </ScrollView>
 
-      {/* Download Statement Button */}
-      <View className="px-6 py-4 bg-white border-t border-gray-200">
-        <TouchableOpacity className="bg-orange-500 rounded-xl py-4">
-          <Text className="text-white text-center text-base font-bold">
-            📄 Download Statement
-          </Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
