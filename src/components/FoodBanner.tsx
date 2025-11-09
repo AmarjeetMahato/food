@@ -20,7 +20,6 @@ export const HealthyBanner = () => {
           style={{ height: 170 }}
         >
           <View className="flex-row items-center justify-between px-5 h-full">
-            {/* Left Content */}
             <View className="flex-1 pr-3">
               <View className="bg-white/30 px-3 py-1 rounded-full self-start mb-2 flex-row items-center gap-1">
                 <Feather name="award" size={14} color="white" />
@@ -40,7 +39,6 @@ export const HealthyBanner = () => {
               </View>
             </View>
 
-            {/* Right Image/Icon */}
             <View className="w-[110px] h-full items-center justify-center relative">
               <Image
                 source={{ uri: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=400" }}
@@ -48,7 +46,7 @@ export const HealthyBanner = () => {
                 className="rounded-full border-4 border-white/50"
                 resizeMode="cover"
               />
-              {/* Badge/Icon Overlay */}
+
               <View className="absolute -top-1 right-2 bg-yellow-300 rounded-full p-2 shadow-md">
                 <MaterialCommunityIcons name="check-decagram" size={24} color="#56AB2F" />
               </View>
@@ -60,7 +58,6 @@ export const HealthyBanner = () => {
   );
 };
 
-// Design 1: Original Gradient with Discount
 export const BannerDesign1 = () => {
   return (
     <View className="mt-4 mb-3" style={{ width, height: BANNER_HEIGHT }}>
@@ -107,7 +104,6 @@ export const BannerDesign1 = () => {
   );
 };
 
-// Design 2: Modern Card with Floating Image
 export const BannerDesign2 = () => {
   return (
     <View className="mt-4 mb-3" style={{ width, height: BANNER_HEIGHT }}>
@@ -142,7 +138,6 @@ export const BannerDesign2 = () => {
   );
 };
 
-// Design 3: Split Design with Two Sections
 export const BannerDesign3 = () => {
   return (
     <View className="mt-4 mb-3" >
@@ -209,7 +204,6 @@ export const BannerDesign4 = () => {
 };
 
 
-// Design 5: Image Background Banner
 export const BannerDesign5 = () => {
   return (
     <View className="mt-4 mb-3" style={{ width, height: BANNER_HEIGHT }}>
@@ -242,7 +236,6 @@ export const BannerDesign5 = () => {
   );
 };
 
-// Design 6: Neon Style Banner
 export const BannerDesign6 = () => {
   return (
     <View className="mt-4 mb-3" style={{ width, height: BANNER_HEIGHT }}>
@@ -309,7 +302,6 @@ export const BannerDesign6 = () => {
   );
 };
 
-// Export all designs
 export default {
   BannerDesign1,
   BannerDesign2,

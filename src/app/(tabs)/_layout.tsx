@@ -3,7 +3,7 @@ import { Tabs } from "expo-router";
 import { AntDesign, MaterialIcons  ,FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { Image } from "react-native";
 
-const isSubscribed = true;
+const isSubscribed = false;
 
 export default function TabsLayout() {
   return (
@@ -15,16 +15,16 @@ export default function TabsLayout() {
       >
         <Tabs.Screen name="index" options={{
                title:"Home",
-              
+                   tabBarActiveTintColor: "#FF7E5F",
                tabBarIcon:({focused})=>(
-                    focused ? <FontAwesome5 name="home" size={24}  color={focused ? "#FF7E5F" : "gray"}/> : <FontAwesome5 name="home" size={24}  color={focused ? "#FF7E5F" : "gray"}/>
+                    focused ? <FontAwesome5 name="home" size={24}  color={focused ? "#FF7E5F" : "#FF7E5F"}/> : <FontAwesome5 name="home" size={24}  color={focused ? "#FF7E5F" : "gray"}/>
                )
         }}/>
         <Tabs.Screen
   name="subscriptions"
   options={{
         title: isSubscribed ? "Subscribed" : "Subscriptions",
-
+                             tabBarActiveTintColor: "#FF7E5F",
     tabBarIcon: ({ focused }) => {
       // Example: change icon if user is subscribed
 
@@ -38,7 +38,7 @@ export default function TabsLayout() {
 />
         <Tabs.Screen name="menu" options={{
                title:"Menu",
-               tabBarActiveTintColor:"black",
+               tabBarActiveTintColor: "#FF7E5F",
                tabBarIcon:({focused})=>(
                     focused ? <MaterialIcons  name="restaurant-menu" size={24}  color={focused ? "#FF7E5F" : "gray"}/> : <MaterialIcons  name="restaurant-menu" size={24}  color={focused ? "#FF7E5F" : "gray"}/>
                )
@@ -48,6 +48,7 @@ export default function TabsLayout() {
   name="profile"
   options={{
     title: "Profile",
+    tabBarActiveTintColor: "#FF7E5F",
     tabBarIcon: ({ focused }) => {
       const isAuth = true; // 👉 replace with your auth state (Redux, Context, Zustand etc.)
       const profileImage =

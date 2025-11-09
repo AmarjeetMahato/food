@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import MealDetailModal from '../app/(screens)/messfooddetails';
+import { router } from 'expo-router';
 
 interface Meal {
   type: string;
@@ -43,32 +44,6 @@ const SubscriptionScreen = () => {
     });
   };
 
-  const upcomingMeals: UpcomingMeal[] = [
-    {
-      date: '2024-01-16',
-      day: 'Today',
-      meals: [
-        { type: 'Lunch', menu: 'Dal Rice, Aloo Sabzi, Roti, Pickle', time: '12:00-2:00 PM' },
-        { type: 'Dinner', menu: 'Rajma, Jeera Rice, Chapati, Salad', time: '7:00-9:00 PM' }
-      ]
-    },
-    {
-      date: '2024-01-17',
-      day: 'Tomorrow',
-      meals: [
-        { type: 'Lunch', menu: 'Chole Bhature, Lassi, Pickle', time: '12:00-2:00 PM' },
-        { type: 'Dinner', menu: 'Mixed Dal, Rice, Sabzi, Roti', time: '7:00-9:00 PM' }
-      ]
-    },
-    {
-      date: '2024-01-18',
-      day: 'Thursday',
-      meals: [
-        { type: 'Lunch', menu: 'Biryani, Raita, Boiled Egg', time: '12:00-2:00 PM' },
-        { type: 'Dinner', menu: 'Palak Paneer, Rice, Naan', time: '7:00-9:00 PM' }
-      ]
-    }
-  ];
 
   const handlePauseSubscription = () => {
     Alert.alert(
@@ -86,6 +61,8 @@ const SubscriptionScreen = () => {
     setModalVisible(true);
   };
 
+ 
+
 
   const handleSkipMeal = (date: string, mealType: string) => {
     Alert.alert(
@@ -102,8 +79,76 @@ const SubscriptionScreen = () => {
     );
   };
 
-  // Calculate total meals
-  const totalUpcomingMeals = upcomingMeals.reduce((acc, day) => acc + day.meals.length, 0);
+const upcomingMeals: UpcomingMeal[] = [
+  {
+    date: '2024-01-16',
+    day: 'Today',
+    meals: [
+      { 
+        type: 'Breakfast', 
+        menu: 'Poha, Masala Chai, Banana', 
+        time: '8:00-10:00 AM' 
+      },
+      { 
+        type: 'Lunch', 
+        menu: 'Dal Rice, Aloo Sabzi, Roti, Pickle', 
+        time: '12:00-2:00 PM' 
+      },
+      { 
+        type: 'Dinner', 
+        menu: 'Rajma, Jeera Rice, Chapati, Salad', 
+        time: '7:00-9:00 PM' 
+      }
+    ]
+  },
+  {
+    date: '2024-01-17',
+    day: 'Tomorrow',
+    meals: [
+      { 
+        type: 'Breakfast', 
+        menu: 'Paratha, Curd, Pickle, Tea', 
+        time: '8:00-10:00 AM' 
+      },
+      { 
+        type: 'Lunch', 
+        menu: 'Chole Bhature, Lassi, Pickle', 
+        time: '12:00-2:00 PM' 
+      },
+      { 
+        type: 'Dinner', 
+        menu: 'Mixed Dal, Rice, Sabzi, Roti', 
+        time: '7:00-9:00 PM' 
+      }
+    ]
+  },
+  {
+    date: '2024-01-18',
+    day: 'Thursday',
+    meals: [
+      { 
+        type: 'Breakfast', 
+        menu: 'Idli Sambar, Coconut Chutney, Coffee', 
+        time: '8:00-10:00 AM' 
+      },
+      { 
+        type: 'Lunch', 
+        menu: 'Biryani, Raita, Boiled Egg', 
+        time: '12:00-2:00 PM' 
+      },
+      { 
+        type: 'Dinner', 
+        menu: 'Palak Paneer, Rice, Naan', 
+        time: '7:00-9:00 PM' 
+      }
+    ]
+  }
+];
+
+   const totalMeals = upcomingMeals.reduce(
+    (acc, day) => acc + day.meals.length,
+    0
+  );
 
   return (
     <SafeAreaView edges={["top"]} className="flex-1 bg-gray-50">
@@ -191,7 +236,7 @@ const SubscriptionScreen = () => {
                           Upcoming Meals
                         </Text>
                         <Text className="text-gray-500 text-xs mt-1">
-                          {totalUpcomingMeals} meals • {upcomingMeals.length} days
+                          {totalMeals} meals • {upcomingMeals.length} days
                         </Text>
                       </View>
                     </View>
@@ -221,87 +266,122 @@ const SubscriptionScreen = () => {
                 </View>
 
                 {/* Meals List */}
-                <View className="gap-y-4">
-                  {upcomingMeals.map((day, index) => (
-                    <View
-                      key={index}
-                      className="border border-gray-200 rounded-2xl p-3 bg-gray-50"
-                    >
-                      <View className="flex-row justify-between items-center mb-4">
-                        <View>
-                          <Text className="text-lg font-bold text-gray-800">{day.day}</Text>
-                          <Text className="text-gray-500 text-sm mt-1">{formatDate(day.date)}</Text>
-                        </View>
-                        <View className="bg-orange-100 px-3 py-1 rounded-full">
-                          <Text className="text-orange-600 text-xs font-bold">
-                            {day.meals.length} meals
-                          </Text>
-                        </View>
-                      </View>
+              <View className="gap-y-3">
+   {upcomingMeals.map((day, dayIndex) => (
+        <View key={dayIndex} className="gap-y-3">
+          {/* Optional: Day Header */}
+          <Text className="text-gray-500 font-semibold mb-2">{day.day}</Text>
 
-                      <View className="space-y-3">
-                        {day.meals.map((meal, mealIndex) => (
-                          <View
-                            key={mealIndex}
-                            className="bg-white rounded-xl p-4 border border-gray-100"
-                          >
-                            <View className="flex-row justify-between items-start mb-3">
-                              <View className="flex-row items-center">
-                                <View className="bg-orange-100 rounded-full p-2 mr-3">
-                                  <Ionicons
-                                    name={meal.type === 'Lunch' ? 'sunny' : 'moon'}
-                                    size={16}
-                                    color="#ea580c"
-                                  />
-                                </View>
-                                <Text className="font-bold text-orange-600 text-base">
-                                  {meal.type}
-                                </Text>
-                              </View>
-
-                              <View className=" ">
-                                {/* your existing design - unchanged */}
-                                <View className="flex-row gap-x-3">
-                                  <TouchableOpacity
-                                        onPress={() => handleViewMeal(meal)}
-                                    className="bg-green-50 px-3 py-1 rounded-lg"
-                                  >
-                                    <Text className="text-green-600 text-xs font-bold">View</Text>
-                                  </TouchableOpacity>
-
-                                  <TouchableOpacity
-                                      onPress={() => handleSkipMeal("2024-01-16", "lunch")}
-                                    className="bg-red-50 px-3 py-1 rounded-lg"
-                                  >
-                                    <Text className="text-red-600 text-xs font-bold">Skip</Text>
-                                  </TouchableOpacity>
-                                </View>
-
-                                {/* Modal (added here) */}
-                                {selectedMeal && (
-                                  <MealDetailModal
-                                    isVisible={isModalVisible}
-                                    onClose={() => setModalVisible(false)}
-                                    meal={selectedMeal}
-                                  />
-                                )}
-                              </View>
-
-
-                            </View>
-                            <Text className="text-gray-700 text-sm leading-5 mb-2">
-                              {meal.menu}
-                            </Text>
-                            <View className="flex-row items-center mt-2">
-                              <Ionicons name="time-outline" size={14} color="#9CA3AF" />
-                              <Text className="text-gray-400 text-xs ml-1">{meal.time}</Text>
-                            </View>
-                          </View>
-                        ))}
-                      </View>
+          {day.meals.map((meal, mealIndex) => (
+            <View
+              key={mealIndex}
+              className="bg-white rounded-xl   overflow-hidden border border-gray-100 shadow-sm"
+            >
+              {/* Header Section */}
+              <View className="bg-gradient-to-r from-orange-50 to-amber-50 px-4 py-3 flex-row justify-between items-center">
+                <View className="flex-row items-center">
+                  <View
+                    className={`${
+                      meal.type === 'Breakfast'
+                        ? 'bg-yellow-100'
+                        : meal.type === 'Lunch'
+                        ? 'bg-orange-100'
+                        : 'bg-indigo-100'
+                    } rounded-full p-2.5 mr-3`}
+                  >
+                    <Ionicons
+                      name={
+                        meal.type === 'Breakfast'
+                          ? 'cafe'
+                          : meal.type === 'Lunch'
+                          ? 'sunny'
+                          : 'moon'
+                      }
+                      size={18}
+                      color={
+                        meal.type === 'Breakfast'
+                          ? '#f59e0b'
+                          : meal.type === 'Lunch'
+                          ? '#ea580c'
+                          : '#6366f1'
+                      }
+                    />
+                  </View>
+                  <View>
+                    <Text className="font-bold text-gray-800 text-base">
+                      {meal.type}
+                    </Text>
+                    <View className="flex-row items-center mt-0.5">
+                      <Ionicons name="time-outline" size={12} color="#9CA3AF" />
+                      <Text className="text-gray-400 text-xs ml-1">{meal.time}</Text>
                     </View>
-                  ))}
+                  </View>
                 </View>
+
+                <View className="flex-row gap-x-2">
+                  <TouchableOpacity
+                    onPress={() => router.push("/mealsdetails")}
+                    className="bg-white px-4 py-2 rounded-lg border border-green-200 shadow-sm"
+                  >
+                    <View className="flex-row items-center">
+                      <Ionicons name="eye-outline" size={14} color="#16a34a" />
+                      <Text className="text-green-600 text-xs font-semibold ml-1">
+                        View
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => handleSkipMeal(day.date, meal.type.toLowerCase())}
+                    className="bg-white px-4 py-2 rounded-lg border border-red-200 shadow-sm"
+                  >
+                    <View className="flex-row items-center">
+                      <Ionicons name="close-circle-outline" size={14} color="#dc2626" />
+                      <Text className="text-red-600 text-xs font-semibold ml-1">
+                        Skip
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Menu Content */}
+              <View className="px-4 py-3">
+                <View className="flex-row items-start">
+                  <Ionicons
+                    name="restaurant-outline"
+                    size={16}
+                    color="#f97316"
+                    className="mt-0.5"
+                  />
+                  <Text className="text-gray-700 text-sm leading-5 ml-2 flex-1">
+                    {meal.menu}
+                  </Text>
+                </View>
+
+                <View className="flex-row gap-x-2 mt-3">
+                  <View className="bg-green-50 px-2 py-1 rounded-full">
+                    <Text className="text-green-700 text-xs font-medium">🌾 Veg</Text>
+                  </View>
+                  <View className="bg-blue-50 px-2 py-1 rounded-full">
+                    <Text className="text-blue-700 text-xs font-medium">⚡ 450 kcal</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          ))}
+        </View>
+      ))}
+  
+  {/* Modal (move outside the map for better performance) */}
+  {selectedMeal && (
+    <MealDetailModal
+      isVisible={isModalVisible}
+      onClose={() => setModalVisible(false)}
+      meal={selectedMeal}
+    />
+  )}
+</View>
 
                 {/* Notice Banner */}
                 <View className="mt-6 bg-yellow-50 rounded-xl p-4 border border-yellow-200">

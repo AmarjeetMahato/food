@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Image, StatusBar, Alert } from 'react-native';
-// Note: You must install these dependencies:
-// npm install nativewind expo-linear-gradient lucide-react-native
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Image, StatusBar, Alert, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Search, MoreVertical, MapPin, List, Share2, XCircle, Clock, Truck, Receipt } from 'lucide-react-native';
+import { ArrowLeft, MapPin, MoreVertical, Share2, Clock, Truck, Receipt, XCircle, Package } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SearchBar from '../../components/SearchBar';
 import { useRouter } from 'expo-router';
-// --- TYPE DEFINITIONS (TypeScript) ---
+import { EvilIcons, Ionicons } from '@expo/vector-icons';
+import OrderDetails from './orderdetails';
+import OrderListSkeleton from '../../skeltons/OrderDetailsSkeleton';
 
+// --- TYPE DEFINITIONS ---
 interface OrderItem {
   name: string;
   quantity: number;
@@ -22,17 +22,13 @@ interface Order {
   orderTime: string;
   deliveryStatus: 'Delivered' | 'On the Way' | 'Preparing' | 'Cancelled';
   items: OrderItem[];
-  imageUri: string; // Placeholder for restaurant image
+  imageUri: string;
 }
 
 // --- MOCK DATA ---
-
 const formatOrderTime = (orderTime: string) => {
-  // Replace the comma with 'T' and trim spaces
   const isoTime = orderTime.replace(', ', 'T');
-
   const date = new Date(isoTime);
-
   return date.toLocaleString('en-GB', {
     day: '2-digit',
     month: 'short',
@@ -42,8 +38,6 @@ const formatOrderTime = (orderTime: string) => {
     hour12: true,
   }).replace(',', '');
 };
-
-
 
 const mockOrders: Order[] = [
   {
@@ -78,7 +72,7 @@ const mockOrders: Order[] = [
     restaurantName: 'Healthy Bowls',
     restaurantLocation: 'Huda City Centre',
     totalAmount: 320,
-   orderTime: '2025-10-04T20:30:00',
+    orderTime: '2025-10-04T20:30:00',
     deliveryStatus: 'Preparing',
     items: [
       { name: 'Quinoa Salad', quantity: 1 },
@@ -89,15 +83,13 @@ const mockOrders: Order[] = [
 ];
 
 // --- UTILITY COMPONENTS ---
-
 const ThreeDotsMenu: React.FC<{ order: Order }> = ({ order }) => {
-  const router = useRouter()
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Function to show full order details (could be a modal or navigation)
   const handleViewDetails = () => {
     setIsOpen(false);
-    router.push("/orderdetails")
+    router.push("/orderdetails");
   };
 
   const handleShareOrder = () => {
@@ -107,24 +99,31 @@ const ThreeDotsMenu: React.FC<{ order: Order }> = ({ order }) => {
 
   return (
     <View className="relative">
-      <TouchableOpacity onPress={() => setIsOpen(!isOpen)} className="p-2">
-        <MoreVertical size={20} color="orange" />
+      <TouchableOpacity 
+        onPress={() => setIsOpen(!isOpen)} 
+        className="p-2.5 bg-orange-50 rounded-full active:bg-orange-100"
+      >
+        <MoreVertical size={18} color="#F97316" />
       </TouchableOpacity>
       {isOpen && (
-        <View className="absolute top-8 right-0 w-40 bg-white rounded-lg shadow-xl z-10 border border-gray-100 overflow-hidden">
+        <View className="absolute top-12 right-0 w-44 bg-white rounded-2xl shadow-2xl z-50 border border-gray-100 overflow-hidden">
           <TouchableOpacity 
             onPress={handleViewDetails}
-            className="flex-row items-center gap-x-3 p-3 active:bg-gray-50 border-b border-gray-100"
+            className="flex-row items-center gap-x-3 px-4 py-3.5 active:bg-orange-50 border-b border-gray-100"
           >
-            <Receipt size={16} color="#374151" className="mr-2" /> 
-            <Text className="text-sm text-gray-800">Order Details</Text>
+            <View className="bg-orange-100 p-2 rounded-lg">
+              <Receipt size={16} color="#F97316" /> 
+            </View>
+            <Text className="text-sm font-semibold text-gray-800">Order Details</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={handleShareOrder}
-            className="flex-row items-center p-3 active:bg-gray-50 gap-x-3"
+            className="flex-row items-center px-4 py-3.5 active:bg-orange-50 gap-x-3"
           >
-            <Share2 size={16} color="#374151" className="mr-2 " />
-            <Text className="text-sm text-gray-800">Share Order</Text>
+            <View className="bg-orange-100 p-2 rounded-lg">
+              <Share2 size={16} color="#F97316" />
+            </View>
+            <Text className="text-sm font-semibold text-gray-800">Share Order</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -136,32 +135,61 @@ const OrderCard: React.FC<{ order: Order }> = ({ order }) => {
   const isDelivered = order.deliveryStatus === 'Delivered';
   const isCancellable = order.deliveryStatus !== 'Delivered' && order.deliveryStatus !== 'Cancelled';
 
-  const getStatusIcon = () => {
+  const getStatusConfig = () => {
     switch (order.deliveryStatus) {
       case 'Delivered':
-        return { icon: <Clock size={16} color="#10B981" className="mr-1" />, textClass: 'text-green-600' };
+        return { 
+          icon: <Package size={14} color="#10B981" />, 
+          textClass: 'text-emerald-600',
+          bgClass: 'bg-emerald-50',
+          dotClass: 'bg-emerald-500'
+        };
       case 'On the Way':
-        return { icon: <Truck size={16} color="#F59E0B" className="mr-1" />, textClass: 'text-amber-600' };
+        return { 
+          icon: <Truck size={14} color="#F97316" />, 
+          textClass: 'text-orange-600',
+          bgClass: 'bg-orange-50',
+          dotClass: 'bg-orange-500'
+        };
       case 'Preparing':
-        return { icon: <Clock size={16} color="#3B82F6" className="mr-1" />, textClass: 'text-blue-600' };
+        return { 
+          icon: <Clock size={14} color="#3B82F6" />, 
+          textClass: 'text-blue-600',
+          bgClass: 'bg-blue-50',
+          dotClass: 'bg-blue-500'
+        };
       case 'Cancelled':
-        return { icon: <XCircle size={16} color="#EF4444" className="mr-1" />, textClass: 'text-red-600' };
+        return { 
+          icon: <XCircle size={14} color="#EF4444" />, 
+          textClass: 'text-red-600',
+          bgClass: 'bg-red-50',
+          dotClass: 'bg-red-500'
+        };
       default:
-        return { icon: null, textClass: 'text-gray-600' };
+        return { 
+          icon: null, 
+          textClass: 'text-gray-600',
+          bgClass: 'bg-gray-50',
+          dotClass: 'bg-gray-500'
+        };
     }
   };
-  const status = getStatusIcon();
   
-  // Primary action button styling (Track or Reorder)
+  const status = getStatusConfig();
+  
   const ActionButton: React.FC<{ text: string; onPress: () => void; isTrack?: boolean }> = ({ text, onPress, isTrack = false }) => (
-    <TouchableOpacity onPress={onPress} className="flex-1 rounded-xl overflow-hidden shadow-md shadow-orange-500/50">
+    <TouchableOpacity 
+      onPress={onPress} 
+      className="flex-1 rounded-2xl overflow-hidden active:opacity-90"
+      style={{ elevation: isTrack ? 8 : 0 }}
+    >
       <LinearGradient
-        colors={isTrack ? ["#F97316", "#EA580C"] : ["#E5E7EB", "#D1D5DB"]} // Orange gradient for Track/Reorder, Gray for others
+        colors={isTrack ? ["#F97316", "#EA580C"] : ["#FFFFFF", "#FFFFFF"]} 
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        className="py-3 flex-row items-center justify-center rounded-xl"
+        className={`py-3.5 flex-row items-center justify-center rounded-2xl ${!isTrack ? 'border-2 border-gray-200' : ''}`}
       >
-        <Text className={`font-bold text-base ${isTrack ? 'text-white' : 'text-gray-800'}`}>
+        <Text className={`font-bold text-base ${isTrack ? 'text-white' : 'text-gray-700'}`}>
           {text}
         </Text>
       </LinearGradient>
@@ -169,139 +197,198 @@ const OrderCard: React.FC<{ order: Order }> = ({ order }) => {
   );
 
   return (
-    <View className="bg-white rounded-2xl shadow-lg shadow-gray-200 p-4  border border-gray-100">
-      
-      {/* 1. Header with Image, Location, and Three Dots */}
-      <View className="flex-row justify-between items-start mb-4">
-        <View className="flex-row items-center flex-1 pr-2">
-          <Image 
-            source={{ uri: order.imageUri }} 
-            className="w-12 h-12 rounded-lg mr-4"
-          />
-          <View className="flex-1">
-            <Text className="font-bold text-lg text-gray-900" numberOfLines={1}>
+    <View className="bg-white rounded-3xl shadow-lg shadow-gray-300/50 overflow-hidden mb-4 border border-gray-100">
+      {/* Status Badge Ribbon */}
+      <View className={`absolute top-0 right-0 ${status.bgClass} px-4 py-1.5 rounded-bl-2xl z-10 flex-row items-center gap-x-1.5`}>
+        <View className={`w-1.5 h-1.5 rounded-full ${status.dotClass}`} />
+        <Text className={`text-xs font-bold ${status.textClass}`}>
+          {order.deliveryStatus.toUpperCase()}
+        </Text>
+      </View>
+
+      <View className="p-5">
+        {/* Header Section */}
+        <View className="flex-row items-start mb-4">
+          <View className="relative">
+            <Image 
+              source={{ uri: order.imageUri }} 
+              className="w-16 h-16 rounded-2xl"
+            />
+            <View className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-md">
+              <View className="w-5 h-5 bg-orange-500 rounded-full items-center justify-center">
+                <Text className="text-white text-xs font-bold">✓</Text>
+              </View>
+            </View>
+          </View>
+          
+          <View className="flex-1 ml-4 mr-2">
+            <Text className="font-bold text-lg text-gray-900 mb-1" numberOfLines={1}>
               {order.restaurantName}
             </Text>
-            <View className="flex-row items-center mt-1">
-              <MapPin size={14} color="#6B7280" className="mr-1" />
-              <Text className="text-sm text-gray-600" numberOfLines={1}>
+            <View className="flex-row items-center">
+              <MapPin size={12} color="#9CA3AF" />
+              <Text className="text-xs text-gray-500 ml-1 flex-1" numberOfLines={1}>
                 {order.restaurantLocation}
               </Text>
             </View>
+            <Text className="text-xs text-gray-400 mt-1">
+              Order #{order.id}
+            </Text>
           </View>
+
+          <ThreeDotsMenu order={order} />
         </View>
-        <ThreeDotsMenu order={order} />
-      </View>
 
-      {/* Separator */}
-      <View className="h-px bg-gray-200 mb-4" />
-
-      {/* 2. Order Summary */}
-      <View className="mb-4">
-        <Text className="text-base font-semibold text-gray-900 mb-1">
-          Order Summary
-        </Text>
-        <Text className="text-sm text-gray-600">
-          {order.items.map(item => `${item.quantity} x ${item.name}`).join(', ')}
-        </Text>
-      </View>
-
-      {/* Separator */}
-      <View className="h-px bg-gray-200 mb-4" />
-
-      {/* 3. Order Placement Details and Status */}
-      <View className="flex-row justify-between items-center mb-4">
-        <View>
-          <Text className="text-xs text-gray-500">Order Placed</Text>
-          <Text className="text-sm font-medium text-gray-800">
-            {formatOrderTime(order.orderTime)
-            }
-</Text>
+        {/* Items Summary Card */}
+        <View className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-4 mb-4">
+          <View className="flex-row items-center justify-between mb-2">
+            <Text className="text-sm font-bold text-gray-700">
+              Items Ordered
+            </Text>
+            <View className="bg-white px-2.5 py-1 rounded-full">
+              <Text className="text-xs font-bold text-orange-600">
+                {order.items.length} items
+              </Text>
+            </View>
+          </View>
+          <Text className="text-sm text-gray-600 leading-5">
+            {order.items.map(item => `${item.quantity}x ${item.name}`).join(' • ')}
+          </Text>
         </View>
-        <View className="items-end">
-          <Text className="text-xs text-gray-500">Status</Text>
-          <View className="flex-row items-center">
-            {status.icon}
-            <Text className={`text-sm font-bold ${status.textClass}`}>
-              {order.deliveryStatus}
+
+        {/* Order Info Grid */}
+        <View className="flex-row bg-gray-50 rounded-2xl p-4 mb-4">
+          <View className="flex-1">
+            <Text className="text-xs text-gray-500 mb-1 font-medium">Total Amount</Text>
+            <Text className="text-lg font-bold text-gray-900">
+              ₹{order.totalAmount}
+            </Text>
+          </View>
+          <View className="w-px bg-gray-200 mx-3" />
+          <View className="flex-1">
+            <Text className="text-xs text-gray-500 mb-1 font-medium">Order Time</Text>
+            <Text className="text-sm font-semibold text-gray-800">
+              {formatOrderTime(order.orderTime).split(' ').slice(0, 2).join(' ')}
+            </Text>
+            <Text className="text-xs text-gray-500">
+              {formatOrderTime(order.orderTime).split(' ').slice(2).join(' ')}
             </Text>
           </View>
         </View>
+
+        {/* Action Buttons */}
+        <View className="flex-row gap-x-3">
+          {isCancellable && (
+            <TouchableOpacity 
+              onPress={() => Alert.alert(`Cancel Order`, `Are you sure you want to cancel order ${order.id}?`)}
+              className="border-2 border-gray-200 px-5 py-3.5 rounded-2xl active:bg-gray-50 flex-row items-center justify-center"
+            >
+              <XCircle size={16} color="#6B7280" />
+              <Text className="text-sm font-bold text-gray-700 ml-2">Cancel</Text>
+            </TouchableOpacity>
+          )}
+
+          <ActionButton 
+            text={isDelivered ? '🔄 Reorder' : '📍 Track Order'} 
+            onPress={() => Alert.alert(
+              isDelivered ? `Reorder` : `Track`, 
+              isDelivered ? `Reordering ${order.id}` : `Tracking ${order.id}`
+            )}
+            isTrack={!isDelivered}
+          />
+        </View>
       </View>
-
-      {/* Separator */}
-      <View className="h-px bg-gray-200 mb-4" />
-
-      {/* 4. Action Buttons (Track and Cancel) */}
-    <View className="flex-row gap-x-4 items-center">
-  {/* Cancel Button (Minimalist, outlined, pill-shaped) */}
-  {isCancellable ? (
-    <TouchableOpacity 
-      onPress={() => Alert.alert(`Cancel Order`, `Are you sure you want to cancel order ${order.id}?`)}
-      // Smaller vertical padding, tighter rounding, minimal border
-      className="border border-gray-300 px-4 py-2 rounded-full active:bg-gray-100"
-    >
-      <Text className="text-sm font-medium text-gray-700">Cancel</Text>
-    </TouchableOpacity>
-  ) : (
-    // Spacer when not cancellable (ensures Track button stays on the right)
-    <View className="flex-1" />
-  )}
-
-  {/* Track / Reorder Button (Primary gradient, slightly smaller padding) */}
-  <View className="flex-1"> 
-    <ActionButton 
-      text={isDelivered ? 'Reorder' : 'Track Order'} 
-      onPress={() => Alert.alert(isDelivered ? `Reorder` : `Track`, isDelivered ? `Reordering ${order.id}` : `Tracking ${order.id}`)}
-      isTrack={!isDelivered}
-      
-    />
-  </View>
-</View>
-      
     </View>
   );
 };
 
 // --- MAIN SCREEN COMPONENT ---
-
 const OrderHistoryScreen: React.FC = () => {
-  const router = useRouter()
-  return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" /> 
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const router = useRouter();
 
-      {/* UI Header */}
-      <View className=" pb-4 px-4 gap-x-4 bg-white shadow-md flex-row tracking-widest  items-center border-b border-gray-100">
-        <TouchableOpacity onPress={() => console.log('Go Back')} className="p-2">
-          <ArrowLeft onPress={()=> router.back()} size={24} color="#374151" />
-        </TouchableOpacity>
-        <Text className="text-xl font-semibold text-gray-900">Your Orders</Text>
-      
+      const [loading, setLoading] = useState<boolean>(true);
+  
+        useEffect(() => {
+           const timer = setTimeout(() => setLoading(false), 2000); 
+           return () => clearTimeout(timer);
+         }, []);
+
+   
+
+  const walletBalance = 2450.75; // Example balance
+  const recentTransactions = 12; // Example stat
+
+  return (
+    <SafeAreaView className="flex-1 bg-gradient-to-b from-gray-50 to-white">
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" /> 
+
+      {/* Modern Header with Gradient */}
+      <View className="bg-white shadow-xl">
+        <LinearGradient
+          colors={["#FFFFFF", "#FFF7ED"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          className="px-5 pt-4 pb-6"
+        >
+          <View className="flex-row items-center gap-x-4 mb-4">
+            <TouchableOpacity 
+              onPress={() => router.back()} 
+              className="p-2.5 bg-white rounded-2xl shadow-md active:bg-gray-50"
+            >
+              <ArrowLeft size={22} color="#374151" />
+            </TouchableOpacity>
+            <View className="flex-1">
+              <Text className="text-2xl font-bold text-gray-900">Your Orders</Text>
+              <Text className="text-sm text-gray-500 mt-0.5">
+                {mockOrders.length} orders • Last 30 days
+              </Text>
+            </View>
+          </View>
+
+          {/* Enhanced Search Bar */}
+          <View className={`flex-row items-center bg-white rounded-2xl px-5 py-1 ${
+            isSearchFocused 
+              ? 'shadow-xl border-2 border-orange-400' 
+              : 'shadow-md border border-gray-200'
+          }`}>
+            <View className={`${isSearchFocused ? 'bg-orange-100' : 'bg-gray-100'} p-2 rounded-xl`}>
+              <EvilIcons name="search" size={20} color={isSearchFocused ? "#F97316" : "#6B7280"} />
+            </View>
+            <TextInput
+              className="flex-1 ml-3 text-base text-gray-900 font-medium"
+              placeholder="Search your orders..."
+              placeholderTextColor="#94a3b8"
+              value={searchText}
+              onChangeText={setSearchText}
+              onFocus={() => setIsSearchFocused(true)}
+              onBlur={() => setIsSearchFocused(false)}
+            />
+            {searchText.length > 0 && (
+              <TouchableOpacity 
+                onPress={() => setSearchText('')}
+                className="bg-orange-100 rounded-xl p-2 active:bg-orange-200"
+              >
+                <Ionicons name="close" size={16} color="#F97316" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </LinearGradient>
       </View>
 
-      <SearchBar/>
-
       {/* Order List */}
+      {loading ? 
+      <OrderListSkeleton /> : 
+        <ScrollView 
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 20, paddingBottom: 24 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {mockOrders.map((order) => (
+          <OrderCard key={order.id} order={order} />
+        ))}
+      </ScrollView>}
     
-             <ScrollView 
-  // Use a NativeWind class string directly on style property for gap
-  contentContainerStyle={{ paddingVertical: 16, }} 
-
-  className="px-4 gap-y-3" // You can keep this, but let's add a wrapper for reliability
->
-  {/* Adding a View wrapper is the most reliable way to enforce gap/space-y in RN */}
-  <View className="space-y-4"> 
-    {mockOrders.map((order) => (
-      <OrderCard key={order.id} order={order} />
-    ))}
-    {/* Padding at the bottom for scroll comfort */}
-    <View className="h-4" /> 
-  </View>
-</ScrollView>
-
-    
-
     </SafeAreaView>
   );
 };
