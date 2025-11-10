@@ -9,7 +9,7 @@ import SubscriptionScreen from '../../components/Subscribed';
 
 const Subscriptions = () => {
 
-   let isSubscribed = true;
+   let isSubscribed = false;
  
   return (
     <View  className="flex-1 bg-gray-50">

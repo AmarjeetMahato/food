@@ -11,7 +11,7 @@ interface SkeletonProps {
   width?: number;
   height: number;
   radius?: number;
-  fullWidth?: boolean; // for 100% width
+  fullWidth?: boolean; 
   style?: StyleProp<ViewStyle>;
 }
 
@@ -34,7 +34,7 @@ const Skeleton: React.FC<SkeletonProps> = ({ width, height, radius, fullWidth, s
           width: fullWidth ? "100%" : width,
           height,
           borderRadius: radius || 8,
-          backgroundColor: "#e5e7eb", // Tailwind gray-200
+          backgroundColor: "#e5e7eb", 
         } as ViewStyle,
         style,
       ]}

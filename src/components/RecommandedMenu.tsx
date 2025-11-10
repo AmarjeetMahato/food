@@ -249,17 +249,7 @@ export default function RecommandedMenu() {
                   </View>
                 </View>
 
-                {/* <View style={{ borderBottomWidth: 1, borderStyle: "dotted", borderColor: "#ccc", marginVertical: 10 }} /> */}
-
-                {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 10, gap: 10 }}>
-                  {orderData.map((order) => (
-                    <Pressable key={order.id}>
-                      <View className="bg-gray-200 px-4 py-1 rounded-full">
-                        <Text className="text-gray-500 font-semibold text-sm text-center">{order.label}</Text>
-                      </View>
-                    </Pressable>
-                  ))}
-                </ScrollView> */}
+          
               </View>
             </View>
           </Pressable>

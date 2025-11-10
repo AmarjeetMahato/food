@@ -124,13 +124,16 @@ const SubscriptionsCard = () => {
                 {/* Pricing */}
                 <View className="bg-gray-50 rounded-2xl p-4 mb-4">
                   <View className="flex-row items-end gap-2 mb-2">
-                    <Text className="text-4xl font-bold text-orange-500">{plan.price}</Text>
+                 
+                            <Text className="text-4xl font-bold text-orange-500">{plan.price}</Text>
                     {plan.originalPrice && (
                       <Text className="text-lg text-gray-400 line-through mb-1">
                         {plan.originalPrice}
                       </Text>
                     )}
+
                   </View>
+
                   <View className="bg-green-100 self-start px-3 py-1 rounded-full mb-2">
                     <Text className="text-green-700 font-semibold text-xs">{plan.savings}</Text>
                   </View>

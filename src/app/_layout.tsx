@@ -2,7 +2,11 @@ import { Stack } from "expo-router"
 import React from "react"
 import "../../global.css"
 export default function RootLayout() {
+
+
    return (
+
+
       <Stack screenOptions={{ headerShown: false }}>
                <Stack.Screen name="(screens)/splash" options={{ headerShown: false }} />
 
@@ -15,7 +19,6 @@ export default function RootLayout() {
 
       <Stack.Screen name="(screens)/SinglePage" options={{
             headerShown: false, // ✅ show header
-          
             headerTintColor: "black", // ✅ back arrow color
             headerTitleAlign: "center", // ✅ center the title
             animation: "slide_from_right",
